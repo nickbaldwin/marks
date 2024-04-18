@@ -9,10 +9,10 @@ import manifest from './manifest';
 
 export default defineConfig({
     server: {
-        port: 5175,
+        port: 5176,
         strictPort: true,
         hmr: {
-            port: 5175,
+            port: 5176,
         },
     },
     root: resolve(__dirname, 'src'),
