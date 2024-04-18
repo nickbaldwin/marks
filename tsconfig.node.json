@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        // "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+
+        // from marks
+        "composite": true,
+        "skipLibCheck": true,
+        "module": "esnext",
+        // "moduleResolution": "bundler",
+        "allowSyntheticDefaultImports": true,
+        "strict": true
+    },
+    "include": ["vite.config.ts", "manifest.ts"]
+}

@@ -1,0 +1,19 @@
+#popup-root {
+    width: 400px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: left;
+}
+
+.card {
+    padding: 1em;
+    width: calc(100% - 2rem);
+    background-color: #ddd;
+    margin-bottom: 1rem;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
