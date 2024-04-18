@@ -23,17 +23,14 @@ The extension is composed of four primary components:
 
 -   #### Service worker
 
-    This script runs in the background, and communicates with the content scripts running on all search pages, in order
-    to sync and correctly persist settings used across all Monster domains.
+    This script runs in the background, and is used to load and then 'share' the store across the other contexts.
 
 -   #### Popup
-    When the extension icon is clicked, the popup is displayed in a new tab. Here a user can upload a file and the
-    extension will parse the file and display the results.
+    When the extension icon is clicked, the user can save the current tab as a bookmark within a selected folder.
 
 -   #### New tab
    
-    When a user opens a new tab, the extension will display a list of bookmarks and notes.
-
+    When a user opens a new tab, their folders, bookmarks and notes are displayed.
 
 
 In addition, there are numerous assets and build/configuration files that are used to generate the extension. This is
