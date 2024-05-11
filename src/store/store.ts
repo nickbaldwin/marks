@@ -35,12 +35,13 @@ export interface State {
     collectionsList: CollectionsList;
     collectionsMap: CollectionsMap;
     addCollection: (add: BasicInfo) => void;
+    addCollectionToFolder: (add: BasicInfo, id: string) => string;
     removeCollection: (id: string) => void;
 
     foldersList: FoldersList;
     foldersMap: FoldersMap;
-    addFolder: (add: Folder) => void;
-    removeFolder: (add: Folder) => void;
+    addFolder: (add: BasicInfo) => void;
+    removeFolder: (id: string) => void;
 }
 
 export const useStore = create<State>()(
@@ -111,20 +112,46 @@ export const useStore = create<State>()(
         collectionsList: [],
         collectionsMap: {},
 
+        // todo remove
         addCollection: (add: BasicInfo) => {
+            console.log(add);
+        },
+        addCollectionToFolder: (add: BasicInfo, id: string): string => {
             const collection = new Collection(add);
             set(
                 (state: {
+                    foldersList: string[];
+                    foldersMap: FoldersMap;
                     collectionsList: string[];
                     collectionsMap: CollectionsMap;
-                }) => ({
-                    collectionsList: [...state.collectionsList, collection.id],
-                    collectionsMap: {
-                        ...state.collectionsMap,
-                        [collection.id]: collection,
-                    },
-                })
+                }) => {
+                    if (!state.foldersMap[id]) {
+                        return state;
+                    }
+                    return {
+                        foldersList: state.foldersList,
+                        foldersMap: {
+                            ...state.foldersMap,
+                            [id]: {
+                                ...state.foldersMap[id],
+                                list: [
+                                    ...state.foldersMap[id].list,
+                                    collection.id,
+                                ],
+                            },
+                        },
+                        collectionsList: [
+                            ...state.collectionsList,
+                            collection.id,
+                        ],
+                        collectionsMap: {
+                            ...state.collectionsMap,
+                            [collection.id]: collection,
+                        },
+                    };
+                }
             );
+            return collection.id;
         },
 
         removeCollection: (id: string) => {
@@ -154,10 +181,18 @@ export const useStore = create<State>()(
 
         foldersList: [],
         foldersMap: {},
-        addFolder: (add: Folder) => {
-            console.log('addFolder', add);
+        addFolder: (add: BasicInfo) => {
+            const folder = new Folder(add);
+            set((state: { foldersList: string[]; foldersMap: FoldersMap }) => ({
+                foldersList: [...state.foldersList, folder.id],
+                foldersMap: {
+                    ...state.foldersMap,
+                    [folder.id]: folder,
+                },
+            }));
         },
-        removeFolder: (id: Folder) => {
+
+        removeFolder: (id: string) => {
             console.log('removeFolder', id);
         },
     }))

@@ -57,6 +57,26 @@ export class Collection implements CommonInfo, BasicInfo {
     }
 }
 
+export class Folder implements CommonInfo, BasicInfo {
+    id: string;
+    version: number;
+    createdAt: number;
+    updatedAt: number;
+    title: string;
+    description: string;
+    list: Array<string>;
+
+    constructor(basicInfo: BasicInfo) {
+        this.id = uuid();
+        this.version = 1;
+        this.createdAt = Date.now();
+        this.updatedAt = Date.now();
+        this.title = basicInfo.title;
+        this.description = basicInfo.description || '';
+        this.list = [];
+    }
+}
+
 export interface CommonInfo {
     id: string;
     version: number;
@@ -76,10 +96,6 @@ export interface MarkInfo {
 
 export interface List {
     list: Array<string>;
-}
-
-export interface Folder {
-    id: string;
 }
 
 export interface MarksMap {

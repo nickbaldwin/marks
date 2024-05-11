@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { State, useStore } from '../store/store';
 import { parseUrl } from '../helpers/domain';
 
+import { Folders } from './Folders';
+
 export const PC: () => React.JSX.Element = () => {
     const bears = useStore((state: State) => state.bears);
     const increase = useStore((state: State) => state.increase);
-    const addMark = useStore((state: State) => state.addMarkToCollection);
-    const addCollection = useStore((state: State) => state.addCollection);
-    const collectionsList = useStore((state: State) => state.collectionsList);
-    const collections = useStore((state: State) => state.collectionsMap);
 
-    const [collectionName, setCollectionName] = useState('');
+    const addMark = useStore((state: State) => state.addMarkToCollection);
+
+    const foldersList = useStore((state: State) => state.foldersList);
+    const addFolder = useStore((state: State) => state.addFolder);
+    const [folderName, setFolderName] = useState('');
 
     const [tabInfo, setTabInfo] = React.useState('');
 
@@ -33,38 +35,29 @@ export const PC: () => React.JSX.Element = () => {
     return (
         <>
             <h2>Marks - the useful bookmark manager</h2>
-            <div className="container">
-                <p>collections</p>
-                {collectionsList.map((id: string, _i: number) => (
-                    <div key={_i} className="card">
-                        <button onClick={() => addTab(collections[id].id)}>
-                            {collections[id].title}
-                        </button>
-                    </div>
-                ))}
-                <br />
-                ...or add to a new collection
-                <div className="card">
-                    <input
-                        type="text"
-                        value={collectionName}
-                        onChange={(e) => setCollectionName(e.target.value)}
-                    />
-                    <button
-                        disabled={!collectionName}
-                        onClick={() => {
-                            addCollection({
-                                title: collectionName,
-                                description: 'testing',
-                            });
-                            setCollectionName('');
-                        }}
-                    >
-                        add
-                    </button>
-                </div>
+            <Folders list={foldersList} />
+            <br />
+            <br />
+            ...or add a new folder
+            <div className="card">
+                <input
+                    type="text"
+                    value={folderName}
+                    onChange={(e) => setFolderName(e.target.value)}
+                />
+                <button
+                    disabled={!folderName}
+                    onClick={() => {
+                        addFolder({
+                            title: folderName,
+                            description: 'testing',
+                        });
+                        setFolderName('');
+                    }}
+                >
+                    add
+                </button>
             </div>
-
             <div>
                 <span>Bears: {bears}</span>
                 <br />

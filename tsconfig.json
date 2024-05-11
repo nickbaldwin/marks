@@ -5,7 +5,6 @@
         "esModuleInterop": false,
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
-
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
         // "lib": ["ES2020", "DOM", "DOM.Iterable"],
 
@@ -14,7 +13,6 @@
         "useDefineForClassFields": true,
         "module": "esnext",
         "skipLibCheck": true,
-
         /* Bundler mode */
         "moduleResolution": "node",
         // "moduleResolution": "bundler",
@@ -23,13 +21,16 @@
         "isolatedModules": true,
         "noEmit": true,
         "jsx": "react-jsx",
-
         /* Linting */
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true
     },
-    "include": ["src"],
-    "references": [{ "path": "./tsconfig.node.json" }]
+    "include": ["src", "node_modules/vitest/globals.d.ts"],
+    "references": [
+        {
+            "path": "./tsconfig.node.json"
+        }
+    ]
 }

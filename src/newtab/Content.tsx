@@ -1,4 +1,4 @@
-import { useStore } from '../store/store';
+import { State, useStore } from '../store/store';
 import {
     CollectionsList,
     CollectionsMap,
@@ -11,21 +11,21 @@ import { useState } from 'react';
 
 export const Content = () => {
     const collectionsList: CollectionsList = useStore(
-        (state) => state.collectionsList
+        (state: State) => state.collectionsList
     );
     const collections: CollectionsMap = useStore(
-        (state) => state.collectionsMap
+        (state: State) => state.collectionsMap
     );
-    const addCollection = useStore((state) => state.addCollection);
-    const removeCollection = useStore((state) => state.removeCollection);
+    const addCollection = useStore((state: State) => state.addCollection);
+    const removeCollection = useStore((state: State) => state.removeCollection);
 
-    const marksList: MarksList = useStore((state) => state.marksList);
-    const marks: MarksMap = useStore((state) => state.marksMap);
-    const addMark = useStore((state) => state.addMark);
-    const removeMark = useStore((state) => state.removeMark);
+    const marksList: MarksList = useStore((state: State) => state.marksList);
+    const marks: MarksMap = useStore((state: State) => state.marksMap);
+    const addMark = useStore((state: State) => state.addMark);
+    const removeMark = useStore((state: State) => state.removeMark);
 
-    const bears = useStore((state) => state.bears);
-    const inc = useStore((state) => state.increase);
+    const bears = useStore((state: State) => state.bears);
+    const inc = useStore((state: State) => state.increase);
 
     const [collectionName, setCollectionName] = useState('');
     return (

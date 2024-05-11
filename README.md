@@ -2,7 +2,7 @@
 
 ## todos
 
-- refer to https://github.com/users/nickbaldwin/projects/1/views/1?filterQuery=
+-   refer to https://github.com/users/nickbaldwin/projects/1/views/1?filterQuery=
 
 ## What does this extension do?
 
@@ -26,22 +26,21 @@ The extension is composed of four primary components:
     This script runs in the background, and is used to load and then 'share' the store across the other contexts.
 
 -   #### Popup
+
     When the extension icon is clicked, the user can save the current tab as a bookmark within a selected folder.
 
 -   #### New tab
-   
-    When a user opens a new tab, their folders, bookmarks and notes are displayed.
 
+    When a user opens a new tab, their folders, bookmarks and notes are displayed.
 
 In addition, there are numerous assets and build/configuration files that are used to generate the extension. This is
 described in the build process section.
 
 ## How is it developed?
 
-This extension is developed using [React](https://github.com/facebook/react) and [TypeScript](https://github.com/microsoft/TypeScript), with [Vite](https://github.com/vitejs/vite) and [Vitest](https://github.com/vitest-dev/vitest) providing build and testing tooling. 
+This extension is developed using [React](https://github.com/facebook/react) and [TypeScript](https://github.com/microsoft/TypeScript), with [Vite](https://github.com/vitejs/vite) and [Vitest](https://github.com/vitest-dev/vitest) providing build and testing tooling.
 
-The [CRXjs](https://github.com/crxjs/chrome-extension-tools
-) Vite plugin is used to simplify the development/build process - as it provides HMR (Hot Module Replacement) for extensions.
+The [CRXjs](https://github.com/crxjs/chrome-extension-tools) Vite plugin is used to simplify the development/build process - as it provides HMR (Hot Module Replacement) for extensions.
 
 ## State
 
@@ -60,15 +59,12 @@ alternatively: `chrome.storage.local.get(console.log)`
 
 [Prettier](https://github.com/prettier/prettier) is used for code formatting.
 
-[ESLint](https://github.com/eslint/eslint), 
-
-
+[ESLint](https://github.com/eslint/eslint),
 
 https://github.com/prettier/eslint-config-prettier
 https://github.com/lint-staged/lint-staged
 https://github.com/typicode/husky
 https://github.com/typescript-eslint/typescript-eslint
-
 
 ## Expanding the ESLint configuration
 
@@ -94,12 +90,6 @@ export default {
 -   Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and
     add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
 
-
-
-
 https://github.com/testing-library/react-testing-library
 
 https://github.com/DefinitelyTyped/DefinitelyTyped
-
-
-

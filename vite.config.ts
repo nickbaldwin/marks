@@ -26,6 +26,6 @@ export default defineConfig({
         // environment: 'jsdom',
         environment: 'happy-dom',
         // browser: { enabled: false, //name: 'chrome', // browser name is required },
-        // setupFiles: './setup-vitest.ts',
+        setupFiles: './testSetup/testSetup.ts',
     },
 });
