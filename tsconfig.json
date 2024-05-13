@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        // "types": ["vitest/globals"],
         // from example
         "allowJs": false,
         "esModuleInterop": false,

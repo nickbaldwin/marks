@@ -5,6 +5,7 @@ import {
     MarksList,
     MarksMap,
 } from '../store/schema';
+import { MarkItem } from './Mark';
 
 import './Content.css';
 import { useState } from 'react';
@@ -47,17 +48,11 @@ export const Content = () => {
                         <div className="container">
                             {collections[id].list.map(
                                 (id: string, _j: number) => (
-                                    <div key={_i + '' + _j} className="card">
-                                        {marks[id].id}
-                                        <br />
-                                        {marks[id].originalTitle}
-                                        <br />
-                                        &nbsp;
-                                        <br />
-                                        <a href={marks[id].url}>
-                                            {marks[id].url}
-                                        </a>
-                                        <br />
+                                    <div>
+                                        <MarkItem
+                                            position={_j}
+                                            mark={marks[id]}
+                                        />
                                         <button onClick={() => removeMark(id)}>
                                             remove
                                         </button>

@@ -23,8 +23,9 @@ export default defineConfig({
 
     test: {
         globals: true,
-        // environment: 'jsdom',
-        environment: 'happy-dom',
+        environment: 'jsdom',
+        // happy-dom fails with zustand-chrome-local-storage error
+        // environment: 'happy-dom',
         // browser: { enabled: false, //name: 'chrome', // browser name is required },
         setupFiles: './testSetup/testSetup.ts',
     },

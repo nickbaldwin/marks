@@ -3,7 +3,6 @@
         // "module": "esnext",
         "moduleResolution": "node",
         "resolveJsonModule": true,
-
         // from marks
         "composite": true,
         "skipLibCheck": true,
