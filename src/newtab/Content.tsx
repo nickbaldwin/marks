@@ -67,11 +67,13 @@ export const Content = () => {
 
                 <br />
                 <input
+                    aria-labelledby="addCollectionButton"
                     type="text"
                     value={collectionName}
                     onChange={(e) => setCollectionName(e.target.value)}
                 />
                 <button
+                    id="addCollectionButton"
                     disabled={!collectionName}
                     onClick={() => {
                         addCollection({
