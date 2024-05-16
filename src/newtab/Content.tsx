@@ -1,4 +1,4 @@
-import { State, useStore } from '../store/store';
+import { State, useBoundStore } from '../store/store';
 import {
     CollectionsList,
     CollectionsMap,
@@ -11,22 +11,26 @@ import './Content.css';
 import { useState } from 'react';
 
 export const Content = () => {
-    const collectionsList: CollectionsList = useStore(
+    const collectionsList: CollectionsList = useBoundStore(
         (state: State) => state.collectionsList
     );
-    const collections: CollectionsMap = useStore(
+    const collections: CollectionsMap = useBoundStore(
         (state: State) => state.collectionsMap
     );
-    const addCollection = useStore((state: State) => state.addCollection);
-    const removeCollection = useStore((state: State) => state.removeCollection);
+    const addCollection = useBoundStore((state: State) => state.addCollection);
+    const removeCollection = useBoundStore(
+        (state: State) => state.removeCollection
+    );
 
-    const marksList: MarksList = useStore((state: State) => state.marksList);
-    const marks: MarksMap = useStore((state: State) => state.marksMap);
-    const addMark = useStore((state: State) => state.addMark);
-    const removeMark = useStore((state: State) => state.removeMark);
+    const marksList: MarksList = useBoundStore(
+        (state: State) => state.marksList
+    );
+    const marks: MarksMap = useBoundStore((state: State) => state.marksMap);
+    const addMark = useBoundStore((state: State) => state.addMark);
+    const removeMark = useBoundStore((state: State) => state.removeMark);
 
-    const bears = useStore((state: State) => state.bears);
-    const inc = useStore((state: State) => state.increase);
+    const bears = useBoundStore((state: State) => state.bears);
+    const inc = useBoundStore((state: State) => state.increase);
 
     const [collectionName, setCollectionName] = useState('');
     return (
@@ -37,11 +41,11 @@ export const Content = () => {
                 {collectionsList.map((id: string, _i: number) => (
                     <>
                         <div key={_i} className="collection">
-                            <h3>{collections[id].title}</h3>
+                            <h3>C: {collections[id].title}</h3>
                             <br />
                             &nbsp;
                             <button onClick={() => removeCollection(id)}>
-                                remove
+                                remove collection
                             </button>
                         </div>
                         <br />
@@ -54,7 +58,7 @@ export const Content = () => {
                                             mark={marks[id]}
                                         />
                                         <button onClick={() => removeMark(id)}>
-                                            remove
+                                            remove mark
                                         </button>
                                     </div>
                                 )

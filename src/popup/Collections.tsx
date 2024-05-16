@@ -1,4 +1,4 @@
-import { State, useStore } from '../store/store';
+import { State, useBoundStore } from '../store/store';
 import { parseUrl } from '../helpers/domain';
 import { AddCollectiion } from './AddCollection';
 
@@ -9,8 +9,8 @@ export const Collections = ({
     list: string[];
     folderId: string;
 }): JSX.Element => {
-    const collections = useStore((state: State) => state.collectionsMap);
-    const addMark = useStore((state: State) => state.addMarkToCollection);
+    const collections = useBoundStore((state: State) => state.collectionsMap);
+    const addMark = useBoundStore((state: State) => state.addMarkToCollection);
 
     const addTab = async (id: string): Promise<void> => {
         const [tab] = await chrome.tabs.query({

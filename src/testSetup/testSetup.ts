@@ -23,12 +23,14 @@ beforeAll(() => {
                         return;
                     });
                 },
+                // @ts-expect-error todo
                 set: (toMergeIntoStorage) => {
                     localStorage = { ...localStorage, ...toMergeIntoStorage };
                     return new Promise(() => {
                         return;
                     });
                 },
+                // @ts-expect-error todo
                 get: (keysToInclude) => {
                     if (
                         typeof keysToInclude === 'string' &&
@@ -63,8 +65,8 @@ beforeAll(() => {
             query: vi.fn((_queryInfo, callback) => {
                 callback([{ id: 123 }]);
             }),
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            create: vi.fn(({ url }: { url: string }) => {}),
+
+            // create: vi.fn(({ url }: { url: string }) => {}),
         },
         sidePanel: {
             open: vi.fn(),

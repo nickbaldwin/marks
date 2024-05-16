@@ -1,8 +1,8 @@
-import { State, useStore } from '../store/store';
+import { State, useBoundStore } from '../store/store';
 import { Collections } from './Collections';
 
 export const Folders = ({ list }: { list: string[] }) => {
-    const folders = useStore((state: State) => state.foldersMap);
+    const folders = useBoundStore((state: State) => state.foldersMap);
     return (
         <>
             {list.map((id: string, _i: number) => (

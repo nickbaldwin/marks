@@ -29,6 +29,7 @@ const retrieve = () => {
     } else return chrome.storage.local.get();
 };
 // todo - check doc
+// @ts-expect-error todo
 const persist = (arg) => {
     if (!globalThis.chrome?.storage?.local?.set) {
         console.log('cannot persist to storage');
@@ -36,6 +37,7 @@ const persist = (arg) => {
     } else return chrome.storage.local.set(arg);
 };
 
+// @ts-expect-error todo
 const a = (e, o) =>
     Object.fromEntries(
         Object.entries(e).filter(
@@ -57,8 +59,10 @@ const h = () => {
     }
 };
 
+// @ts-expect-error todo
 const includeChromeStore = (e, o) => (t, r, n) => {
     h();
+    // @ts-expect-error todo
     const s = (...c) => {
         t(...c), persist(a(n.getState(), o));
     };
@@ -96,12 +100,12 @@ export interface State {
     removeFolder: (id: string) => void;
 }
 
-export const useStore = create<State>()(
+export const useBoundStore = create<State>()(
     // @ts-expect-error type?
     includeChromeStore((set) => ({
         version,
         bears: 0,
-        increase: (by) =>
+        increase: (by: number) =>
             set((state: { bears: number }) => ({ bears: state.bears + by })),
         lastMark: '',
 
@@ -234,16 +238,6 @@ export const useStore = create<State>()(
 
         foldersList: [],
         foldersMap: {},
-        addFolder: (add: BasicInfo) => {
-            const folder = new Folder(add);
-            set((state: { foldersList: string[]; foldersMap: FoldersMap }) => ({
-                foldersList: [...state.foldersList, folder.id],
-                foldersMap: {
-                    ...state.foldersMap,
-                    [folder.id]: folder,
-                },
-            }));
-        },
 
         removeFolder: (id: string) => {
             console.log('removeFolder', id);
@@ -251,9 +245,22 @@ export const useStore = create<State>()(
     }))
 );
 
+export const addFolder = (add: BasicInfo) => {
+    const folder = new Folder(add);
+    useBoundStore.setState(
+        (state: { foldersList: string[]; foldersMap: FoldersMap }) => ({
+            foldersList: [...state.foldersList, folder.id],
+            foldersMap: {
+                ...state.foldersMap,
+                [folder.id]: folder,
+            },
+        })
+    );
+};
+
 // don't wrap if in test
 export const storeReadyPromise = !globalThis.chrome?.storage?.local?.get
     ? null
-    : wrapStore(useStore);
+    : wrapStore(useBoundStore);
 
-export default useStore;
+export default useBoundStore;

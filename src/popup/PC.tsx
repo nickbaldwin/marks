@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { State, useStore } from '../store/store';
+import { State, useBoundStore, addFolder } from '../store/store';
 import { parseUrl } from '../helpers/domain';
 
 import { Folders } from './Folders';
 
 export const PC: () => React.JSX.Element = () => {
-    const bears = useStore((state: State) => state.bears);
-    const increase = useStore((state: State) => state.increase);
+    const bears = useBoundStore((state: State) => state.bears);
+    const increase = useBoundStore((state: State) => state.increase);
 
-    const addMark = useStore((state: State) => state.addMarkToCollection);
+    const addMark = useBoundStore((state: State) => state.addMarkToCollection);
 
-    const foldersList = useStore((state: State) => state.foldersList);
-    const addFolder = useStore((state: State) => state.addFolder);
+    const foldersList = useBoundStore((state: State) => state.foldersList);
+    // const addFolder = useBoundStore((state: State) => state.addFolder);
     const [folderName, setFolderName] = useState('');
 
     const [tabInfo, setTabInfo] = React.useState('');

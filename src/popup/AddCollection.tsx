@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { State, useStore } from '../store/store';
+import { State, useBoundStore } from '../store/store';
 import { parseUrl } from '../helpers/domain';
 
 export const AddCollectiion = ({
@@ -8,10 +8,10 @@ export const AddCollectiion = ({
     folderId: string;
 }): JSX.Element => {
     const [collectionName, setCollectionName] = useState('');
-    const addCollection = useStore(
+    const addCollection = useBoundStore(
         (state: State) => state.addCollectionToFolder
     );
-    const addMark = useStore((state: State) => state.addMarkToCollection);
+    const addMark = useBoundStore((state: State) => state.addMarkToCollection);
 
     const addTabToNewCollection = async (): Promise<void> => {
         const [tab] = await chrome.tabs.query({
