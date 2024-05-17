@@ -2,6 +2,8 @@ import { create } from 'zustand';
 // import { includeChromeStore } from 'zustand-chrome-local-storage';
 import { includeChromeStore } from './includeChromeStore';
 
+import { produce } from 'immer';
+
 import { wrapStore } from 'webext-zustand';
 import {
     version,
@@ -180,18 +182,23 @@ export const storeCreator = (set) => ({
         );
     },
     removeFolder: (id: string) => {
-        console.log('removeFolder', id);
+        set(
+            produce((state: State) => {
+                state.foldersList = state.foldersList.filter(
+                    (iid) => iid !== id
+                );
+                delete state.foldersMap[id];
+            })
+        );
     },
-    addFolder: (add: BasicInfo) => {
-        console.log('addFolder', add);
-        const folder = new Folder(add);
-        set((state: { foldersList: string[]; foldersMap: FoldersMap }) => ({
-            foldersList: [...state.foldersList, folder.id],
-            foldersMap: {
-                ...state.foldersMap,
-                [folder.id]: folder,
-            },
-        }));
+    addFolder: (basicInfo: BasicInfo) => {
+        const folder = new Folder(basicInfo);
+        set(
+            produce((state: State) => {
+                state.foldersList.push(folder.id);
+                state.foldersMap[folder.id] = folder;
+            })
+        );
     },
 });
 

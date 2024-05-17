@@ -1,4 +1,5 @@
 import { BasicInfo, Folder, FoldersMap } from './schema';
+import { expect } from 'vitest';
 
 // this will be used in early dev process to check functions, then skipped and
 // behaviour will be checked by rendering components directly
@@ -31,7 +32,7 @@ describe('add folder', () => {
                 foldersList: [...state.foldersList, f.id],
                 foldersMap: {
                     ...state.foldersMap,
-                    [f.id]: folder,
+                    [f.id]: f,
                 },
             });
             state = fn(state);
@@ -45,12 +46,15 @@ describe('add folder', () => {
         expect(state).toEqual({
             foldersList: ['1', id],
             foldersMap: {
-                [id]: {
-                    // todo!
-                    // id: id,
+                [id]: expect.objectContaining({
+                    id: id,
                     title: 'folder',
                     description: 'folder',
-                },
+                    list: [],
+                    version: 1,
+                    createdAt: expect.anything(),
+                    updatedAt: expect.anything(),
+                }),
             },
         });
     });
