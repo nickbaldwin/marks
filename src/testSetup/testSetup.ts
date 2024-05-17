@@ -3,6 +3,28 @@
 // todo needed here?
 import '@testing-library/jest-dom';
 
+import { act } from '@testing-library/react-hooks';
+import { create as actualCreate, StateCreator } from 'zustand';
+// a variable to hold reset functions for all stores declared in the app
+const storeResetFns = new Set<() => void>();
+// when creating a store, we get its initial state, create a reset function and add it in the set
+export const createStoreForTest =
+    () =>
+    <S>(createState: StateCreator<S>) => {
+        const store = actualCreate(createState);
+        console.log('store', store);
+        const initialState = store.getState();
+        storeResetFns.add(() => store.setState(initialState, true));
+        return store;
+    };
+// Reset all stores after each test run
+beforeEach(() => {
+    act(() => storeResetFns.forEach((resetFn) => resetFn()));
+
+    // also
+    chrome.storage.local.clear();
+});
+
 beforeAll(() => {
     // todo
     interface LS {
@@ -82,11 +104,13 @@ beforeAll(() => {
     vi.stubGlobal('chrome', chromeMock);
 });
 
-beforeEach(() => {
-    chrome.storage.local.clear();
-});
-
 /**
+ *
+ * beforeEach(() => {
+ *     chrome.storage.local.clear();
+ * });
+ *
+ *
  beforeAll(() => {
  // mock Chakra useBreakpointValue hook:
  vi.mock('@chakra-ui/react', async () => {
