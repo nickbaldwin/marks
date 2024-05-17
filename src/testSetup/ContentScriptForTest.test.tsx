@@ -46,7 +46,7 @@ test('can interact with stateful component', async () => {
     expect(input).toBeInTheDocument();
     await userEvent.type(input, 'test collection');
     await userEvent.click(button);
-    screen.debug();
+    // screen.debug();
     // expect(screen.getByText('test collection')).toBeInTheDocument();
 
     const bears = screen.getByRole('button', { name: 'increase' });
