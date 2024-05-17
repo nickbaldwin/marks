@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { State, useBoundStore, addFolder } from '../store/store';
+import { State, useBoundStore } from '../store/store';
 import { parseUrl } from '../helpers/domain';
 
 import { Folders } from './Folders';
@@ -9,7 +9,7 @@ export const PC: () => React.JSX.Element = () => {
     const increase = useBoundStore((state: State) => state.increase);
 
     const addMark = useBoundStore((state: State) => state.addMarkToCollection);
-
+    const addFolder = useBoundStore((state: State) => state.addFolder);
     const foldersList = useBoundStore((state: State) => state.foldersList);
     // const addFolder = useBoundStore((state: State) => state.addFolder);
     const [folderName, setFolderName] = useState('');

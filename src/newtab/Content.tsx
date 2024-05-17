@@ -11,6 +11,8 @@ import './Content.css';
 import { useState } from 'react';
 
 export const Content = () => {
+    const store = useBoundStore((state) => state);
+    console.log(store);
     const collectionsList: CollectionsList = useBoundStore(
         (state: State) => state.collectionsList
     );
@@ -27,10 +29,12 @@ export const Content = () => {
     );
     const marks: MarksMap = useBoundStore((state: State) => state.marksMap);
     const addMark = useBoundStore((state: State) => state.addMark);
+    console.log('add', addMark);
     const removeMark = useBoundStore((state: State) => state.removeMark);
 
     const bears = useBoundStore((state: State) => state.bears);
     const inc = useBoundStore((state: State) => state.increase);
+    console.log('inc', inc);
 
     const [collectionName, setCollectionName] = useState('');
     return (
