@@ -1,24 +1,36 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { createStoreForTest } from '../testSetup/testSetup';
 import { storeCreator } from './store';
-import { Folder, version } from './schema';
+import { Collection, Folder, Mark, version } from './schema';
 import { expect } from 'vitest';
 
 // import { addFolder, State, defaultStateValues, storeCreator } from './store';
 // import { BasicInfo, CollectionsMap, version } from './schema';
 
-describe('use test store', () => {
-    const useStore = createStoreForTest()(storeCreator);
+const useStore = createStoreForTest()(storeCreator);
 
-    it('has expected default state', () => {
+describe('use test store', async () => {
+    it('has expected default state', async () => {
         const { result } = renderHook(() => useStore());
         expect(result.current.bears).toEqual(0);
         expect(result.current.version).toEqual(version);
-        expect(result.current.marksList.length).toEqual(0);
+        expect(result.current.collectionsMap).toEqual({
+            inbox: expect.objectContaining({
+                id: 'inbox',
+                title: 'inbox',
+            }),
+        });
+        expect(result.current.foldersMap).toEqual({
+            default: expect.objectContaining({
+                id: 'default',
+                title: 'default',
+            }),
+        });
         expect(typeof result.current.addFolder).toEqual('function');
     });
 
-    it('increments', () => {
+    // todo remove bears!
+    it('increments', async () => {
         const { result } = renderHook(() => useStore());
         expect(result.current.bears).toEqual(0);
         act(() => result.current.increase(3));
@@ -28,21 +40,30 @@ describe('use test store', () => {
     });
 });
 
-describe('use test store - folders', () => {
-    const useStore = createStoreForTest()(storeCreator);
+describe('use test store - folders', async () => {
+    // const useStore = createStoreForTest()(storeCreator);
 
-    it('can add folder', () => {
+    it('adds folder', async () => {
         const { result } = renderHook(() => useStore());
-        expect(result.current.foldersList).toEqual([]);
+        expect(result.current.foldersList).toEqual(['default']);
         const folder = new Folder({
             title: 'folder',
             description: 'description',
         });
         act(() => result.current.addFolder(folder));
-        expect(result.current.foldersList.length).toEqual(1);
-        const id = result.current.foldersList[0];
-        expect(result.current.foldersList).toEqual([id]);
+        expect(result.current.foldersList.length).toEqual(2);
+        const id = result.current.foldersList[1];
+        expect(result.current.foldersList).toEqual(['default', id]);
         expect(result.current.foldersMap).toEqual({
+            default: expect.objectContaining({
+                id: 'default',
+                title: 'default',
+                description: 'default',
+                list: [],
+                version: 1,
+                createdAt: expect.anything(),
+                updatedAt: expect.anything(),
+            }),
             [id]: expect.objectContaining({
                 id: id,
                 title: 'folder',
@@ -55,19 +76,247 @@ describe('use test store - folders', () => {
         });
     });
 
-    it('can add then remove folder', () => {
+    it('removes folder', async () => {
         const { result } = renderHook(() => useStore());
-        expect(result.current.foldersList).toEqual([]);
+        expect(result.current.foldersList).toEqual(['default']);
         const folder = new Folder({
             title: 'folder',
             description: 'description',
         });
         act(() => result.current.addFolder(folder));
-        expect(result.current.foldersList.length).toEqual(1);
-        const id = result.current.foldersList[0];
+        expect(result.current.foldersList.length).toEqual(2);
+        const id = result.current.foldersList[1];
         expect(result.current.foldersMap[id]).toBeTypeOf('object');
         act(() => result.current.removeFolder(id));
-        expect(result.current.foldersList.length).toEqual(0);
-        expect(result.current.foldersMap).toEqual({});
+        expect(result.current.foldersList.length).toEqual(1);
+        expect(result.current.foldersMap).toEqual({
+            default: expect.objectContaining({
+                title: 'default',
+                list: [],
+            }),
+        });
+    });
+
+    it('returns state - remove folder - no matching folder id', async () => {
+        const { result } = renderHook(() => useStore());
+        expect(result.current.foldersList).toEqual(['default']);
+        const folder = new Folder({
+            title: 'folder',
+            description: 'description',
+        });
+        act(() => result.current.addFolder(folder));
+        expect(result.current.foldersList.length).toEqual(2);
+        const id = result.current.foldersList[1];
+
+        act(() => result.current.removeFolder('123'));
+        expect(result.current.foldersList).toEqual(['default', id]);
+        expect(result.current.foldersMap[id].id).toEqual(id);
+    });
+});
+
+describe('use test store - collections', async () => {
+    // const useStore = createStoreForTest()(storeCreator);
+
+    it('adds a collection to folder', async () => {
+        const { result } = renderHook(() => useStore());
+        expect(result.current.foldersList).toEqual(['default']);
+        const folder = new Folder({
+            title: 'folder one',
+            description: 'description folder one',
+        });
+        act(() => result.current.addFolder(folder));
+        expect(result.current.foldersList.length).toEqual(2);
+        const folderId = result.current.foldersList[1];
+        const collection = new Collection({
+            title: 'collection one',
+            description: 'description collection one',
+        });
+        act(() => result.current.addCollectionToFolder(collection, folderId));
+        expect(result.current.foldersMap[folderId].list.length).toEqual(1);
+        const cid = result.current.foldersMap[folderId].list[0];
+        expect(result.current.collectionsMap).toEqual({
+            inbox: expect.objectContaining({
+                id: 'inbox',
+                title: 'inbox',
+                description: 'inbox',
+                list: [],
+                version: 1,
+                createdAt: expect.anything(),
+                updatedAt: expect.anything(),
+            }),
+            [cid]: expect.objectContaining({
+                id: cid,
+                title: 'collection one',
+                description: 'description collection one',
+                list: [],
+                version: 1,
+                createdAt: expect.anything(),
+                updatedAt: expect.anything(),
+            }),
+        });
+    });
+
+    it('removes collection from folder', async () => {
+        const { result } = renderHook(() => useStore());
+        expect(result.current.foldersList).toEqual(['default']);
+        expect(result.current.foldersMap).toMatchObject({
+            default: expect.objectContaining({
+                title: 'default',
+                id: expect.anything(),
+            }),
+        });
+        const folder = new Folder({
+            title: 'folder one',
+            description: 'description folder one',
+        });
+        act(() => result.current.addFolder(folder));
+        expect(result.current.foldersList.length).toEqual(2);
+        const fid = result.current.foldersList[1];
+        const collection = new Collection({
+            title: 'collection one',
+            description: 'description collection one',
+        });
+        act(() => result.current.addCollectionToFolder(collection, fid));
+        const cid = result.current.foldersMap[fid].list[0];
+        act(() => result.current.removeCollectionFromFolder(cid, fid, true));
+        expect(result.current.collectionsMap).toEqual({
+            inbox: expect.objectContaining({
+                id: 'inbox',
+                title: 'inbox',
+                description: 'inbox',
+                list: [],
+                version: 1,
+                createdAt: expect.anything(),
+                updatedAt: expect.anything(),
+            }),
+        });
+        expect(result.current.foldersMap[fid]).toMatchObject({
+            id: fid,
+            list: [],
+        });
+    });
+
+    it('returns state - remove a collection - no matching folder id', async () => {
+        const { result } = renderHook(() => useStore());
+        expect(result.current.foldersList).toEqual(['default']);
+        const folder = new Folder({
+            title: 'folder one',
+            description: 'description folder one',
+        });
+        act(() => result.current.addFolder(folder));
+        expect(result.current.foldersList.length).toEqual(2);
+        const fid = result.current.foldersList[1];
+        const collection = new Collection({
+            title: 'collection one',
+            description: 'description collection one',
+        });
+        act(() => result.current.addCollectionToFolder(collection, fid));
+        const cid = result.current.foldersMap[fid].list[0];
+        act(() => result.current.removeCollectionFromFolder(cid, '123', true));
+        expect(result.current.collectionsMap[cid]).toMatchObject({
+            id: cid,
+            title: 'collection one',
+            description: 'description collection one',
+        });
+        expect(result.current.foldersMap[fid]).toMatchObject({
+            id: fid,
+            list: [cid],
+        });
+    });
+
+    it('returns state - remove a collection - no matching collection id', async () => {
+        const { result } = renderHook(() => useStore());
+        expect(result.current.foldersList).toEqual(['default']);
+        const folder = new Folder({
+            title: 'folder one',
+            description: 'description folder one',
+        });
+        act(() => result.current.addFolder(folder));
+        expect(result.current.foldersList.length).toEqual(2);
+        const fid = result.current.foldersList[1];
+        const collection = new Collection({
+            title: 'collection one',
+            description: 'description collection one',
+        });
+        act(() => result.current.addCollectionToFolder(collection, fid));
+        const cid = result.current.foldersMap[fid].list[0];
+        act(() => result.current.removeCollectionFromFolder('123', fid, true));
+        expect(result.current.collectionsMap[cid]).toMatchObject({
+            id: cid,
+            title: 'collection one',
+            description: 'description collection one',
+        });
+        expect(result.current.foldersMap[fid]).toMatchObject({
+            id: fid,
+            list: [cid],
+        });
+    });
+
+    describe('use test store - marks', async () => {
+        it('adds a mark to collection', async () => {
+            //const useStore = createStoreForTest()(storeCreator);
+            const { result } = renderHook(() => useStore());
+            expect(result.current.collectionsList).toEqual(['inbox']);
+            const cid = result.current.collectionsMap.inbox.id;
+            expect(cid).toEqual('inbox');
+            const mark = new Mark({
+                originalDescription: 'original description',
+                originalTitle: 'original title',
+                url: 'https"//www.ibm.com',
+            });
+            act(() => result.current.addMarkToCollection(mark, cid));
+
+            // todo - figure out why mark.id does not match the id used!
+            expect(result.current.collectionsMap['inbox'].list.length).toEqual(
+                1
+            );
+
+            const mid = result.current.collectionsMap['inbox'].list[0];
+
+            expect(result.current.marksMap).toMatchObject({
+                [mid]: {
+                    originalDescription: 'original description',
+                    originalTitle: 'original title',
+                    url: 'https"//www.ibm.com',
+                    id: mid,
+                    updatedAt: expect.anything(),
+                    createdAt: expect.anything(),
+                    version: 1,
+                    description: 'original description',
+                    title: 'original title',
+                },
+            });
+        });
+
+        it('removes mark from a collection', async () => {
+            const { result } = renderHook(() => useStore());
+            expect(result.current.marksMap).toEqual({});
+            expect(result.current.collectionsList).toEqual(['inbox']);
+
+            const cid = result.current.collectionsMap.inbox.id;
+            const mark = new Mark({
+                originalDescription: 'original description',
+                originalTitle: 'original title',
+                url: 'https"//www.ibm.com',
+            });
+            act(() => result.current.addMarkToCollection(mark, cid));
+            // todo - deal with mutating initialState
+            // deep nested intial state?
+            const size = result.current.collectionsMap['inbox'].list.length;
+            const list = result.current.collectionsMap['inbox'].list;
+            const mid = list[list.length - 1];
+            expect(result.current.marksMap).toMatchObject({
+                [mid]: {
+                    originalDescription: 'original description',
+                    originalTitle: 'original title',
+                },
+            });
+
+            act(() => result.current.removeMarkFromCollection(mid, cid));
+            expect(result.current.collectionsMap['inbox'].list.length).toEqual(
+                size - 1
+            );
+            expect(result.current.marksMap).toMatchObject({});
+        });
     });
 });

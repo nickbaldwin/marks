@@ -46,8 +46,8 @@ export class Collection implements CommonInfo, BasicInfo {
     description: string;
     list: Array<string>;
 
-    constructor(basicInfo: BasicInfo) {
-        this.id = uuid();
+    constructor(basicInfo: BasicInfo, id?: string) {
+        this.id = id ? id : uuid();
         this.version = 1;
         this.createdAt = Date.now();
         this.updatedAt = Date.now();
@@ -66,8 +66,8 @@ export class Folder implements CommonInfo, BasicInfo {
     description: string;
     list: Array<string>;
 
-    constructor(basicInfo: BasicInfo) {
-        this.id = uuid();
+    constructor(basicInfo: BasicInfo, id?: string) {
+        this.id = id ? id : uuid();
         this.version = 1;
         this.createdAt = Date.now();
         this.updatedAt = Date.now();

@@ -31,7 +31,7 @@ export const Collections = ({
             <div className="container">
                 {list.map((id: string, _i: number) => (
                     <div key={_i} className="card">
-                        <button onClick={() => addTab(collections[id].id)}>
+                        <button onClick={() => addTab(id)}>
                             {collections[id].title}
                         </button>
                     </div>

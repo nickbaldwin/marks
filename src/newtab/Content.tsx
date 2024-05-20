@@ -1,130 +1,99 @@
 import { State, useBoundStore } from '../store/store';
-import {
-    CollectionsList,
-    CollectionsMap,
-    MarksList,
-    MarksMap,
-} from '../store/schema';
+import { CollectionsList, CollectionsMap, MarksMap } from '../store/schema';
 import { MarkItem } from './Mark';
 
 import './Content.css';
-import { useState } from 'react';
+// import { useState } from 'react';
 
 export const Content = () => {
-    const store = useBoundStore((state) => state);
-    console.log(store);
-    const collectionsList: CollectionsList = useBoundStore(
-        (state: State) => state.collectionsList
+    // todo - named exports in store
+    const foldersList: CollectionsList = useBoundStore(
+        (state: State) => state.foldersList
     );
+    const folders: CollectionsMap = useBoundStore(
+        (state: State) => state.foldersMap
+    );
+
     const collections: CollectionsMap = useBoundStore(
         (state: State) => state.collectionsMap
     );
-    const addCollection = useBoundStore((state: State) => state.addCollection);
-    const removeCollection = useBoundStore(
-        (state: State) => state.removeCollection
+
+    const removeCollectionFromFolder = useBoundStore(
+        (state: State) => state.removeCollectionFromFolder
     );
 
-    const marksList: MarksList = useBoundStore(
-        (state: State) => state.marksList
-    );
     const marks: MarksMap = useBoundStore((state: State) => state.marksMap);
-    const addMark = useBoundStore((state: State) => state.addMark);
-    console.log('add', addMark);
-    const removeMark = useBoundStore((state: State) => state.removeMark);
+
+    const removeMarkFromCollection = useBoundStore(
+        (state: State) => state.removeMarkFromCollection
+    );
 
     const bears = useBoundStore((state: State) => state.bears);
     const inc = useBoundStore((state: State) => state.increase);
-    console.log('inc', inc);
 
-    const [collectionName, setCollectionName] = useState('');
+    // const [collectionName, setCollectionName] = useState('');
     return (
         <>
             <h2>Marks - the useful bookmark manager</h2>
             <div className="container">
-                <h2>collections</h2>
-                {collectionsList.map((id: string, _i: number) => (
-                    <>
-                        <div key={_i} className="collection">
-                            <h3>C: {collections[id].title}</h3>
-                            <br />
-                            &nbsp;
-                            <button onClick={() => removeCollection(id)}>
-                                remove collection
-                            </button>
-                        </div>
+                {foldersList.map((fid: string, _f: number) => (
+                    <div key={'folder-' + _f}>
+                        <h2>F: {folders[fid].title}</h2>
                         <br />
-                        <div className="container">
-                            {collections[id].list.map(
-                                (id: string, _j: number) => (
-                                    <div>
-                                        <MarkItem
-                                            position={_j}
-                                            mark={marks[id]}
-                                        />
-                                        <button onClick={() => removeMark(id)}>
-                                            remove mark
-                                        </button>
-                                    </div>
-                                )
-                            )}
-                        </div>
-                        <br />
-                    </>
-                ))}
-                <br />
 
-                <br />
-                <input
-                    aria-labelledby="addCollectionButton"
-                    type="text"
-                    value={collectionName}
-                    onChange={(e) => setCollectionName(e.target.value)}
-                />
-                <button
-                    id="addCollectionButton"
-                    disabled={!collectionName}
-                    onClick={() => {
-                        addCollection({
-                            title: collectionName,
-                            description: 'testing',
-                        });
-                        setCollectionName('');
-                    }}
-                >
-                    add new collection
-                </button>
-
-                <br />
-            </div>
-
-            <div className="container">
-                {marksList.map((id: string, _i: number) => (
-                    <div key={_i} className="card">
-                        {marks[id].id}
-                        <br />
-                        {marks[id].originalTitle}
-                        <br />
-                        &nbsp;
-                        <br />
-                        <a href={marks[id].url}>{marks[id].url}</a>
-                        <br />
-                        <button onClick={() => removeMark(id)}>remove</button>
+                        {folders[fid].list.map((cid: string, _c: number) => (
+                            <>
+                                <div
+                                    key={'folder-' + _f + '-c-' + _c}
+                                    className="collection"
+                                >
+                                    <h3> - C: {collections[cid].title}</h3>
+                                    <br />
+                                    &nbsp;
+                                    <button
+                                        onClick={() =>
+                                            removeCollectionFromFolder(
+                                                cid,
+                                                fid,
+                                                true
+                                            )
+                                        }
+                                    >
+                                        remove collection
+                                    </button>
+                                </div>
+                                <br />
+                                <div className="container">
+                                    {collections[cid].list.map(
+                                        (mid: string, _j: number) => (
+                                            <div>
+                                                <MarkItem
+                                                    position={_j}
+                                                    mark={marks[mid]}
+                                                />
+                                                <button
+                                                    onClick={() =>
+                                                        removeMarkFromCollection(
+                                                            mid,
+                                                            cid
+                                                        )
+                                                    }
+                                                >
+                                                    remove mark
+                                                </button>
+                                            </div>
+                                        )
+                                    )}
+                                </div>
+                                <br />
+                            </>
+                        ))}
                     </div>
                 ))}
-                <button
-                    onClick={() =>
-                        addMark({
-                            originalTitle: 'Google',
-                            originalDescription: 'Search engine',
-                            url: 'https://www.google.com',
-                        })
-                    }
-                >
-                    add mark
-                </button>
+
+                <p>bears: {bears}</p>
+                <button onClick={() => inc(1)}>increase</button>
             </div>
-            <p>bears: {bears}</p>
-            <button onClick={() => inc(1)}>increase</button>
         </>
     );
 };

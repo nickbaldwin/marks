@@ -8,7 +8,6 @@ import { wrapStore } from 'webext-zustand';
 import {
     version,
     Mark,
-    MarksList,
     MarksMap,
     Collection,
     CollectionsList,
@@ -26,7 +25,6 @@ export interface StateValues {
     version: number;
     bears: number;
     lastMark: string;
-    marksList: MarksList;
     marksMap: MarksMap;
     collectionsList: CollectionsList;
     collectionsMap: CollectionsMap;
@@ -36,14 +34,16 @@ export interface StateValues {
 
 export interface StateActions {
     increase: (by: number) => void;
-    addMark: (add: UrlInfo) => void;
-    removeMark: (id: string) => void;
-    addMarkToCollection: (add: UrlInfo, id: string) => void;
-    addCollection: (add: BasicInfo) => void;
-    addCollectionToFolder: (add: BasicInfo, id: string) => string;
-    removeCollection: (id: string) => void;
-    addFolder: (add: BasicInfo) => void;
-    removeFolder: (id: string) => void;
+    addMarkToCollection: (urlInfo: UrlInfo, collectionId: string) => void;
+    removeMarkFromCollection: (markId: string, collectionId: string) => void;
+    addCollectionToFolder: (basicInfo: BasicInfo, folderId: string) => void;
+    removeCollectionFromFolder: (
+        collectionId: string,
+        folderId: string,
+        isRemoveMarks: boolean
+    ) => void;
+    addFolder: (basicInfo: BasicInfo) => void;
+    removeFolder: (folderId: string) => void;
 }
 
 export type State = StateValues & StateActions;
@@ -52,12 +52,27 @@ export const defaultStateValues: StateValues = {
     version,
     bears: 0,
     lastMark: '',
-    marksList: [],
     marksMap: {},
-    collectionsList: [],
-    collectionsMap: {},
-    foldersList: [],
-    foldersMap: {},
+    collectionsList: ['inbox'],
+    collectionsMap: {
+        inbox: new Collection(
+            {
+                title: 'inbox',
+                description: 'inbox',
+            },
+            'inbox'
+        ),
+    },
+    foldersList: ['default'],
+    foldersMap: {
+        default: new Folder(
+            {
+                title: 'default',
+                description: 'default',
+            },
+            'default'
+        ),
+    },
 };
 
 // type fn = (state: Partial<StateValues>) => Partial<StateValues>;
@@ -72,131 +87,89 @@ export const storeCreator = (set) => ({
         }));
     },
 
-    addMark: (add: UrlInfo) => {
-        const mark = new Mark(add);
-        set((state: { marksList: string[]; marksMap: MarksMap }) => ({
-            marksList: [...state.marksList, mark.id],
-            marksMap: {
-                ...state.marksMap,
-                [mark.id]: mark,
-            },
-        }));
-    },
-    addMarkToCollection: (add: UrlInfo, id: string) => {
-        const mark = new Mark(add);
+    addMarkToCollection: (urlInfo: UrlInfo, collectionId: string) => {
+        const mark = new Mark(urlInfo);
+        console.log(mark);
+        const mid = mark.id;
         set(
-            (state: {
-                marksList: string[];
-                marksMap: MarksMap;
-                collectionsMap: CollectionsMap;
-            }) => ({
-                collectionsMap: {
-                    ...state.collectionsMap,
-                    [id]: {
-                        ...state.collectionsMap[id],
-                        list: [...state.collectionsMap[id].list, mark.id],
-                    },
-                },
-                marksMap: {
-                    ...state.marksMap,
-                    [mark.id]: mark,
-                },
+            produce((state: State) => {
+                if (state.collectionsMap[collectionId]) {
+                    state.collectionsMap[collectionId].list.push(mid);
+                    state.marksMap[mid] = mark;
+                }
             })
         );
     },
-    removeMark: (id: string) => {
-        set((state: { marksList: string[]; marksMap: MarksMap }) => {
-            if (!state.marksMap[id]) {
-                return state;
-            } else {
-                const i = state.marksList.indexOf(id);
-                const list = [...state.marksList];
-                if (i > -1) {
-                    list.splice(i, 1);
-                }
-                const map = { ...state.marksMap };
-                delete map[id];
-                return {
-                    marksList: list,
-                    marksMap: map,
-                };
-            }
-        });
-    },
-    addCollection: (add: BasicInfo) => {
-        console.log(add);
-    },
-    addCollectionToFolder: (add: BasicInfo, id: string): string => {
-        const collection = new Collection(add);
+
+    removeMarkFromCollection: (markId: string, collectionId: string) => {
         set(
-            (state: {
-                foldersList: string[];
-                foldersMap: FoldersMap;
-                collectionsList: string[];
-                collectionsMap: CollectionsMap;
-            }) => {
-                if (!state.foldersMap[id]) {
-                    return state;
+            produce((state: State) => {
+                if (state.collectionsMap[collectionId]) {
+                    state.collectionsMap[collectionId].list =
+                        state.collectionsMap[collectionId].list.filter(
+                            (id) => id !== markId
+                        );
+                    delete state.marksMap[markId];
                 }
-                return {
-                    foldersList: state.foldersList,
-                    foldersMap: {
-                        ...state.foldersMap,
-                        [id]: {
-                            ...state.foldersMap[id],
-                            list: [...state.foldersMap[id].list, collection.id],
-                        },
-                    },
-                    collectionsList: [...state.collectionsList, collection.id],
-                    collectionsMap: {
-                        ...state.collectionsMap,
-                        [collection.id]: collection,
-                    },
-                };
-            }
+            })
+        );
+    },
+    addCollectionToFolder: (
+        basicInfo: BasicInfo,
+        folderId: string
+    ): void | string => {
+        const collection = new Collection(basicInfo);
+        set(
+            produce((state: State) => {
+                if (state.foldersMap[folderId]) {
+                    state.foldersMap[folderId].list.push(collection.id);
+                    state.collectionsList.push(collection.id);
+                    state.collectionsMap[collection.id] = collection;
+                }
+            })
         );
         return collection.id;
     },
-    removeCollection: (id: string) => {
-        set(
-            (state: {
-                collectionsList: string[];
-                collectionsMap: CollectionsMap;
-            }) => {
-                if (!state.collectionsMap[id]) {
-                    return state;
-                } else {
-                    const i = state.collectionsList.indexOf(id);
-                    const list = [...state.collectionsList];
-                    if (i > -1) {
-                        list.splice(i, 1);
-                    }
-                    const map = { ...state.collectionsMap };
-                    delete map[id];
-                    return {
-                        collectionsList: list,
-                        collectionsMap: map,
-                    };
-                }
-            }
-        );
-    },
-    removeFolder: (id: string) => {
+    removeCollectionFromFolder: (
+        collectionId: string,
+        folderId: string,
+        isRemoveMarks: boolean = true
+    ): void => {
         set(
             produce((state: State) => {
-                state.foldersList = state.foldersList.filter(
-                    (iid) => iid !== id
-                );
-                delete state.foldersMap[id];
+                if (state.foldersMap[folderId]) {
+                    // todo - move marks elsewhere
+                    state.foldersMap[folderId].list = state.foldersMap[
+                        folderId
+                    ].list.filter((id) => id !== collectionId);
+                    if (state.collectionsMap[collectionId]) {
+                        if (!isRemoveMarks) {
+                            // todo move them somewhere else
+                        }
+                        delete state.collectionsMap[collectionId];
+                    }
+                }
             })
         );
     },
-    addFolder: (basicInfo: BasicInfo) => {
+    addFolder: (basicInfo: BasicInfo): void => {
         const folder = new Folder(basicInfo);
         set(
             produce((state: State) => {
                 state.foldersList.push(folder.id);
                 state.foldersMap[folder.id] = folder;
+            })
+        );
+    },
+    removeFolder: (folderId: string): void => {
+        set(
+            produce((state: State) => {
+                state.foldersList = state.foldersList.filter(
+                    (iid) => iid !== folderId
+                );
+                if (state.foldersMap[folderId]) {
+                    delete state.foldersMap[folderId];
+                }
             })
         );
     },

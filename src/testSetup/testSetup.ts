@@ -12,13 +12,18 @@ export const createStoreForTest =
     () =>
     <S>(createState: StateCreator<S>) => {
         const store = actualCreate(createState);
-        console.log('store', store);
         const initialState = store.getState();
         storeResetFns.add(() => store.setState(initialState, true));
         return store;
     };
 // Reset all stores after each test run
 beforeEach(() => {
+    act(() => storeResetFns.forEach((resetFn) => resetFn()));
+
+    // also
+    chrome.storage.local.clear();
+});
+afterEach(() => {
     act(() => storeResetFns.forEach((resetFn) => resetFn()));
 
     // also
