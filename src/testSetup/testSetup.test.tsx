@@ -28,6 +28,7 @@ test('render works', async () => {
 test('component using store can be rendered', async () => {
     const FakeComponent = () => {
         const useStore = createStoreForTest()(storeCreator);
+        // @ts-expect-error todo use named exports
         const bears: number = useStore((state: State) => state.bears);
         return <p>{bears === undefined ? ':-(' : bears}</p>;
     };
@@ -38,7 +39,9 @@ test('component using store can be rendered', async () => {
 test('component using store can be rendered', async () => {
     const FakeComponent = () => {
         const useStore = createStoreForTest()(storeCreator);
+
         const collectionsList: CollectionsList = useStore(
+            // @ts-expect-error todo use named exports
             (state: State) => state.collectionsList
         );
         return (

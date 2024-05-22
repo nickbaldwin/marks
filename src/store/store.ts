@@ -194,8 +194,11 @@ export const storeCreator = (set) => ({
         );
     },
     reset: () => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        set(produce(defaultStateValues, (draft) => {}));
+        set(
+            produce(defaultStateValues, (draft) => {
+                draft.bears = 0;
+            })
+        );
     },
 });
 

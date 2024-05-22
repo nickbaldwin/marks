@@ -153,6 +153,7 @@ describe('collections', async () => {
             description: 'description collection one',
         });
 
+        // @ts-expect-error todo return
         act(() => result.current.addCollectionToFolder(collection, folderId));
         expect(result.current.foldersMap[folderId].list.length).toEqual(1);
         const cid = result.current.foldersMap[folderId].list[0];
@@ -199,6 +200,7 @@ describe('collections', async () => {
             title: 'collection one',
             description: 'description collection one',
         });
+        // @ts-expect-error todo return
         act(() => result.current.addCollectionToFolder(collection, fid));
         const cid = result.current.foldersMap[fid].list[0];
 
@@ -235,6 +237,7 @@ describe('collections', async () => {
             title: 'collection one',
             description: 'description collection one',
         });
+        // @ts-expect-error todo return
         act(() => result.current.addCollectionToFolder(collection, fid));
         const cid = result.current.foldersMap[fid].list[0];
 
@@ -265,6 +268,7 @@ describe('collections', async () => {
             title: 'collection one',
             description: 'description collection one',
         });
+        // @ts-expect-error todo return
         act(() => result.current.addCollectionToFolder(collection, fid));
         const cid = result.current.foldersMap[fid].list[0];
 
