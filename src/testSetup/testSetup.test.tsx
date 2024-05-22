@@ -5,9 +5,9 @@ import { render as rtlRender } from '@testing-library/react';
 // todo - create a testContent context (with store)
 // import { Content } from './Content';
 
-import { State } from '../store/store';
-import { useTestStore } from '../store/testStore';
+import { State, storeCreator } from '../store/store';
 import { CollectionsList } from '../store/schema';
+import { createStoreForTest } from './testSetup';
 
 test(`storage.local mock works`, async () => {
     expect(chrome.storage).toBeTruthy;
@@ -25,22 +25,31 @@ test('render works', async () => {
     expect(screen.getByText('hello')).toBeInTheDocument();
 });
 
-// todo - add button
 test('component using store can be rendered', async () => {
     const FakeComponent = () => {
-        const collectionsList: CollectionsList = useTestStore(
+        const useStore = createStoreForTest()(storeCreator);
+        const bears: number = useStore((state: State) => state.bears);
+        return <p>{bears === undefined ? ':-(' : bears}</p>;
+    };
+    rtlRender(<FakeComponent />);
+    expect(screen.getByText('0')).toBeInTheDocument();
+});
+
+test('component using store can be rendered', async () => {
+    const FakeComponent = () => {
+        const useStore = createStoreForTest()(storeCreator);
+        const collectionsList: CollectionsList = useStore(
             (state: State) => state.collectionsList
         );
         return (
             <p>
-                {collectionsList?.length === undefined
-                    ? ':-('
-                    : collectionsList?.length}
+                {collectionsList === undefined ? ':-(' : collectionsList.length}
             </p>
         );
     };
     rtlRender(<FakeComponent />);
-    expect(screen.getByText('0')).toBeInTheDocument();
+    // todo
+    expect(screen.getByText('1')).toBeInTheDocument();
 });
 
 test('renderComponent works', async () => {

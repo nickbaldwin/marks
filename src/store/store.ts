@@ -36,7 +36,7 @@ export interface StateActions {
     increase: (by: number) => void;
     addMarkToCollection: (urlInfo: UrlInfo, collectionId: string) => void;
     removeMarkFromCollection: (markId: string, collectionId: string) => void;
-    addCollectionToFolder: (basicInfo: BasicInfo, folderId: string) => void;
+    addCollectionToFolder: (basicInfo: BasicInfo, folderId: string) => string;
     removeCollectionFromFolder: (
         collectionId: string,
         folderId: string,
@@ -79,6 +79,7 @@ export const defaultStateValues: StateValues = {
 // todo next
 // @ts-expect-error todo
 export const storeCreator = (set) => ({
+    // ...produce(defaultStateValues, (draft) => {}),
     ...defaultStateValues,
 
     increase: (by: number): void => {

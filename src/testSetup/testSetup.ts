@@ -5,6 +5,8 @@ import '@testing-library/jest-dom';
 
 import { act } from '@testing-library/react-hooks';
 import { create as actualCreate, StateCreator } from 'zustand';
+// import { produce } from 'immer';
+import { Collection, Folder } from '../store/schema';
 // a variable to hold reset functions for all stores declared in the app
 const storeResetFns = new Set<() => void>();
 // when creating a store, we get its initial state, create a reset function and add it in the set
@@ -12,7 +14,29 @@ export const createStoreForTest =
     () =>
     <S>(createState: StateCreator<S>) => {
         const store = actualCreate(createState);
-        const initialState = store.getState();
+        // const initialState = store.getState();
+        const initialState = {
+            ...store.getState(),
+            collectionsMap: {
+                inbox: new Collection(
+                    {
+                        title: 'inbox',
+                        description: 'inbox',
+                    },
+                    'inbox'
+                ),
+            },
+            foldersMap: {
+                default: new Folder(
+                    {
+                        title: 'default',
+                        description: 'default',
+                    },
+                    'default'
+                ),
+            },
+        };
+
         storeResetFns.add(() => store.setState(initialState, true));
         return store;
     };
@@ -40,6 +64,8 @@ beforeAll(() => {
     let localStorage: LS = {
         example: 'foobar',
     };
+
+    // todo
 
     const chromeMock = {
         storage: {
@@ -105,8 +131,60 @@ beforeAll(() => {
         },
     };
 
+    // todo - see if can mock chrome in order to use node packages referring to chrome (and to storage)
     // global.chrome = chromeMock;
     vi.stubGlobal('chrome', chromeMock);
+
+    /**
+     const mock = {
+     storage: {
+     local: {
+     get: () => {
+     },
+     },
+     },
+     };
+
+     Object.defineProperty(window, 'chrome', {
+     value: mock,
+     writable: true,
+     });
+
+     Object.defineProperty(global, 'chrome', {
+     value: mock,
+     writable: true,
+     });
+
+     Object.defineProperty(globalThis, 'chrome', {
+     value: mock,
+     writable: true,
+     });
+
+
+     const localStorageMock = (function() {
+     const store = {};
+     return {
+     getItem: function(key) {
+     return store[key];
+     },
+     setItem: function(key, value) {
+     store[key] = value.toString();
+     },
+     clear: function() {
+     store = {};
+     },
+     removeItem: function(key) {
+     delete store[key];
+     },
+     };
+     })();
+     // Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+
+     Object.defineProperty(global, 'chrome', { value: chromeMock, writable: true });
+     Object.defineProperty(globalThis, 'chrome', { value: chromeMock, writable: true });
+     Object.defineProperty(window, 'chrome', { value: chromeMock, writable: true });
+
+     **/
 });
 
 /**

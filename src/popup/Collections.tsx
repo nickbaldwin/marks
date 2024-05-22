@@ -32,7 +32,7 @@ export const Collections = ({
                 {list.map((id: string, _i: number) => (
                     <div key={_i} className="card">
                         <button onClick={() => addTab(id)}>
-                            {collections[id].title}
+                            Add to {collections[id].title}
                         </button>
                     </div>
                 ))}

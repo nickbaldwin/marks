@@ -3,6 +3,7 @@ import { CollectionsList, CollectionsMap, MarksMap } from '../store/schema';
 import { MarkItem } from './Mark';
 
 import './Content.css';
+import { AddCollectionToFolder } from '../elements/AddCollectionToFolder';
 // import { useState } from 'react';
 
 export const Content = () => {
@@ -16,6 +17,10 @@ export const Content = () => {
 
     const collections: CollectionsMap = useBoundStore(
         (state: State) => state.collectionsMap
+    );
+
+    const addCollectionToFolder = useBoundStore(
+        (state: State) => state.addCollectionToFolder
     );
 
     const removeCollectionFromFolder = useBoundStore(
@@ -88,6 +93,11 @@ export const Content = () => {
                                 <br />
                             </>
                         ))}
+
+                        <AddCollectionToFolder
+                            folderId={fid}
+                            addCollectionToFolder={addCollectionToFolder}
+                        />
                     </div>
                 ))}
 

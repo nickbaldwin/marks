@@ -31,7 +31,7 @@ test('render displays component with reference to chrome inside function compone
 test('render displays component with state', async () => {
     render(<ContentScriptForTest />);
     expect(screen.getByText(/bears: 0/)).toBeInTheDocument();
-    expect(screen.getByText('add new collection')).toBeInTheDocument();
+    expect(screen.getByText(/add collection/i)).toBeInTheDocument();
 });
 
 test('can interact with stateful component', async () => {
@@ -39,10 +39,10 @@ test('can interact with stateful component', async () => {
     render(<ContentScriptForTest />);
 
     expect(screen.getByText(/bears: 0/)).toBeInTheDocument();
-    expect(screen.getByText('add new collection')).toBeInTheDocument();
-    const button = screen.getByRole('button', { name: 'add new collection' });
+    expect(screen.getByText(/add collection/i)).toBeInTheDocument();
+    const button = screen.getByRole('button', { name: /add collection/i });
     expect(button).toBeInTheDocument();
-    const input = screen.getByRole('textbox', { name: 'add new collection' });
+    const input = screen.getByRole('textbox', { name: /add collection/i });
     expect(input).toBeInTheDocument();
     await userEvent.type(input, 'test collection');
     await userEvent.click(button);

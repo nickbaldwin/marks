@@ -1,4 +1,4 @@
-// dealing with test environment - cannot reference node outside of a function component?!
+// dealing with test environment - cannot reference chrome outside of a function component?!
 // todo - return nothing - in promise? check doc
 const retrieve = () => {
     if (!globalThis.chrome?.storage?.local?.get) {
