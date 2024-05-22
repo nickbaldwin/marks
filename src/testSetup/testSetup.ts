@@ -7,6 +7,8 @@ import { act } from '@testing-library/react-hooks';
 import { create as actualCreate, StateCreator } from 'zustand';
 // import { produce } from 'immer';
 import { Collection, Folder } from '../store/schema';
+import { produce } from 'immer';
+import { defaultStateValues } from '../store/store';
 // a variable to hold reset functions for all stores declared in the app
 const storeResetFns = new Set<() => void>();
 // when creating a store, we get its initial state, create a reset function and add it in the set
@@ -15,9 +17,8 @@ export const createStoreForTest =
     <S>(createState: StateCreator<S>) => {
         const store = actualCreate(createState);
         // const initialState = store.getState();
-        const initialState = {
-            ...store.getState(),
-            collectionsMap: {
+        const initialState = produce(defaultStateValues, (draft) => {
+            (draft.collectionsMap = {
                 inbox: new Collection(
                     {
                         title: 'inbox',
@@ -25,18 +26,19 @@ export const createStoreForTest =
                     },
                     'inbox'
                 ),
-            },
-            foldersMap: {
-                default: new Folder(
-                    {
-                        title: 'default',
-                        description: 'default',
-                    },
-                    'default'
-                ),
-            },
-        };
+            }),
+                (draft.foldersMap = {
+                    default: new Folder(
+                        {
+                            title: 'default',
+                            description: 'default',
+                        },
+                        'default'
+                    ),
+                });
+        });
 
+        // @ts-expect-error argh
         storeResetFns.add(() => store.setState(initialState, true));
         return store;
     };

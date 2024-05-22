@@ -287,10 +287,7 @@ describe('collections', async () => {
         it('adds a mark to collection', async () => {
             const useStore = createStoreForTest()(storeCreator);
             const { result } = renderHook(() => useStore());
-
-            // folder cleaned up from previous test
             expect(result.current.foldersList).toEqual(['default']);
-
             expect(result.current.collectionsList).toEqual(['inbox']);
             const cid = result.current.collectionsMap.inbox.id;
             expect(cid).toEqual('inbox');
@@ -307,7 +304,7 @@ describe('collections', async () => {
 
             const mid = result.current.collectionsMap['inbox'].list[0];
             // todo - figure out why mark.id does not match the id used!
-            //expect(mid).toEqual(mark.id);
+            // expect(mid).toEqual(mark.id);
 
             expect(result.current.marksMap).toMatchObject({
                 [mid]: {
@@ -329,7 +326,7 @@ describe('collections', async () => {
             const { result } = renderHook(() => useStore());
             expect(result.current.marksMap).toEqual({});
             expect(result.current.collectionsList).toEqual(['inbox']);
-            // expect(result.current.collectionsMap.inbox.list.length).toEqual(0);
+            expect(result.current.collectionsMap.inbox.list.length).toEqual(0);
             const cid = result.current.collectionsMap.inbox.id;
             const mark = new Mark({
                 originalDescription: 'description',
@@ -338,8 +335,6 @@ describe('collections', async () => {
             });
 
             act(() => result.current.addMarkToCollection(mark, cid));
-            // todo - deal with mutating initialState
-            // deep nested intial state?
             const size = result.current.collectionsMap['inbox'].list.length;
             const list = result.current.collectionsMap['inbox'].list;
             const mid = list[list.length - 1];
@@ -366,7 +361,7 @@ describe('collections', async () => {
         expect(result.current.collectionsList).toEqual(['inbox']);
         const cid = result.current.collectionsMap.inbox.id;
         const size = result.current.collectionsMap['inbox'].list.length;
-
+        expect(size).toEqual(0);
         const mark = new Mark({
             originalDescription: 'description',
             originalTitle: 'title',
@@ -386,9 +381,32 @@ describe('collections', async () => {
         expect(result.current.collectionsMap['inbox'].list.length).toEqual(
             size + 2
         );
+
+        // act(() => result.current.reset());
     });
 
-    it.skip('leaks - size is 3 when it should be 1 ', async () => {
+    it('does not leak!', async () => {
+        const useStore = createStoreForTest()(storeCreator);
+        const { result } = renderHook(() => useStore());
+        expect(result.current.marksMap).toEqual({});
+        expect(result.current.collectionsList).toEqual(['inbox']);
+        expect(result.current.collectionsMap['inbox'].list.length).toEqual(0);
+    });
+
+    it('reset works for collections', async () => {
+        const useStore = createStoreForTest()(storeCreator);
+        const { result } = renderHook(() => useStore());
+
+        expect(result.current.marksMap).toEqual({});
+        expect(result.current.foldersList).toEqual(['default']);
+        act(() => result.current.addFolder({ title: 'one', description: '' }));
+        act(() => result.current.addFolder({ title: 'two', description: '' }));
+        expect(result.current.foldersList.length).toEqual(3);
+        act(() => result.current.reset());
+        expect(result.current.foldersList.length).toEqual(1);
+    });
+
+    it('store values being reset!', async () => {
         const useStore = createStoreForTest()(storeCreator);
         const { result } = renderHook(() => useStore());
         expect(result.current.marksMap).toEqual({});

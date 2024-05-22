@@ -44,6 +44,7 @@ export interface StateActions {
     ) => void;
     addFolder: (basicInfo: BasicInfo) => void;
     removeFolder: (folderId: string) => void;
+    reset: () => void;
 }
 
 export type State = StateValues & StateActions;
@@ -79,8 +80,26 @@ export const defaultStateValues: StateValues = {
 // todo next
 // @ts-expect-error todo
 export const storeCreator = (set) => ({
-    // ...produce(defaultStateValues, (draft) => {}),
-    ...defaultStateValues,
+    ...produce(defaultStateValues, (draft) => {
+        (draft.collectionsMap = {
+            inbox: new Collection(
+                {
+                    title: 'inbox',
+                    description: 'inbox',
+                },
+                'inbox'
+            ),
+        }),
+            (draft.foldersMap = {
+                default: new Folder(
+                    {
+                        title: 'default',
+                        description: 'default',
+                    },
+                    'default'
+                ),
+            });
+    }),
 
     increase: (by: number): void => {
         set((state: { bears: number }) => ({
@@ -173,6 +192,10 @@ export const storeCreator = (set) => ({
                 }
             })
         );
+    },
+    reset: () => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        set(produce(defaultStateValues, (draft) => {}));
     },
 });
 
