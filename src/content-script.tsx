@@ -1,8 +1,10 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { storeReadyPromise } from './store/store';
-import { Content } from './newtab/Content';
+// import { Content } from './newtab/Content';
+import { RoutedContent } from './newtab/RoutedContent';
 
+//  <Content />
 if (storeReadyPromise !== null) {
     storeReadyPromise.then(() => {
         const container: HTMLElement | null =
@@ -10,7 +12,7 @@ if (storeReadyPromise !== null) {
         if (container) {
             createRoot(container).render(
                 <React.StrictMode>
-                    <Content />
+                    <RoutedContent />
                 </React.StrictMode>
             );
         }
