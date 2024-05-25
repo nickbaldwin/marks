@@ -7,10 +7,6 @@ import { expect } from 'vitest';
 // import { addFolder, State, defaultStateValues, storeCreator } from './store';
 // import { BasicInfo, CollectionsMap, version } from './schema';
 
-// note - this uses an augmented verison of the store - to reset state
-// however, it is leaking :-(
-// todo!
-
 describe('use test store', async () => {
     it('has expected default state', async () => {
         const useStore = createStoreForTest()(storeCreator);
@@ -135,8 +131,6 @@ describe('folders', async () => {
 });
 
 describe('collections', async () => {
-    // const useStore = createStoreForTest()(storeCreator);
-
     it('adds a collection to folder', async () => {
         const useStore = createStoreForTest()(storeCreator);
         const { result } = renderHook(() => useStore());
@@ -385,8 +379,6 @@ describe('collections', async () => {
         expect(result.current.collectionsMap['inbox'].list.length).toEqual(
             size + 2
         );
-
-        // act(() => result.current.reset());
     });
 
     it('does not leak!', async () => {

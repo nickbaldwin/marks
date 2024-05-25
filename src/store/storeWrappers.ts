@@ -18,5 +18,3 @@ export const useStore = create<State>()(
     // @ts-expect-error type?
     includeChromeStore(storeCreator)
 );
-
-export default useStore;
