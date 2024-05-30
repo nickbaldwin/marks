@@ -29,7 +29,6 @@
         "@crxjs/vite-plugin": "^2.0.0-beta.23",
         "@testing-library/jest-dom": "^6.4.5",
         "@testing-library/react": "^15.0.7",
-        "@testing-library/react-hooks": "^8.0.1",
         "@testing-library/user-event": "^14.5.2",
         "@types/node": "^18.19.31",
         "@types/react": "^18.2.18",
