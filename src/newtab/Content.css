@@ -3,15 +3,12 @@ body {
     margin: 0 auto;
 }
 
-
 #popup-root {
     width: 400px;
     margin: 0 auto;
     padding: 2rem;
     text-align: left;
 }
-
-
 
 .container {
     display: flex;
@@ -51,11 +48,10 @@ body {
 
     box-sizing: border-box;
     color: #fff;
-    font-family: "Avenir Next", Avenir, Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Avenir Next', Avenir, Roboto, Helvetica, Arial, sans-serif;
     font-size: 14px;
     font-weight: 500;
     line-height: 1.4444;
-
 }
 
 a.folder {
@@ -66,13 +62,11 @@ a.folder {
     background-color: hsl(220, 20%, 25%);
 }
 
-
 .style-module--root--e9ece:hover {
     background-color: #292f3d;
     box-shadow: #fff 4px 0 0 0 inset;
     opacity: 1;
 }
-
 
 .style-module--body--07f2f {
     align-items: flex-start;
@@ -103,37 +97,35 @@ a.folder {
     width: 0;
 }
 
-
 .content {
     display: flex;
     flex-direction: column;
     width: calc(100% - 300px);
 
-
-    background-color: #F7F8F9;
-    border: 0 none #272F3B;
+    background-color: #f7f8f9;
+    border: 0 none #272f3b;
     box-sizing: border-box;
-    color: #272F3B;
+    color: #272f3b;
 
-
-    font-family: "Avenir Next", Avenir, Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Avenir Next', Avenir, Roboto, Helvetica, Arial, sans-serif;
     font-size: 13px;
     font-weight: 500;
     line-height: 1.4444;
     padding: 0 0 14px 32px;
 }
 
-
 .collection {
-    background-color: #FFFFFF;
-    border: 0 none #272F3B;
+    background-color: #ffffff;
+    border: 0 none #272f3b;
     border-image: none 100% 1 0 stretch;
     border-radius: 3px;
-    box-shadow: rgba(0, 0, 0, 0.03) 0 0 0 1px, rgba(0, 0, 0, 0.07) 0 1px 1px 0;
+    box-shadow:
+        rgba(0, 0, 0, 0.03) 0 0 0 1px,
+        rgba(0, 0, 0, 0.07) 0 1px 1px 0;
     box-sizing: border-box;
-    color: #272F3B;
+    color: #272f3b;
     cursor: grab;
-    font-family: "Avenir Next", Avenir, Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Avenir Next', Avenir, Roboto, Helvetica, Arial, sans-serif;
     font-size: 13px;
     font-weight: 500;
     line-height: 1.4444;
@@ -143,15 +135,14 @@ a.folder {
     margin-bottom: 20px;
 }
 
-
 .card {
     align-items: center;
-    border: 0 none #272F3B;
+    border: 0 none #272f3b;
     box-sizing: border-box;
-    color: #272F3B;
+    color: #272f3b;
     cursor: pointer;
     display: flex;
-    font-family: "Avenir Next", Avenir, Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Avenir Next', Avenir, Roboto, Helvetica, Arial, sans-serif;
     font-size: 13px;
     font-weight: 500;
     height: 56px;
@@ -168,11 +159,11 @@ a.folder {
 
 .card > a {
     text-decoration: none;
-    color: #272F3B;
+    color: #272f3b;
 }
 
 .card > a:hover {
     text-decoration: none;
     color: #121222;
-    background-color: ;
+    background-color:;
 }

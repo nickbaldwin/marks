@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { createStoreForTest } from '../testSetup/testSetup';
 import { storeCreator } from './store';
 import { Collection, Folder, Mark, version } from './schema';
