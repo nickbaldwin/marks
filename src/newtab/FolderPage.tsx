@@ -59,21 +59,27 @@ export const FolderPage = () => {
                             <div className="container">
                                 {collections[cid].list.map(
                                     (mid: string, _j: number) => (
-                                        <div>
-                                            <MarkItem
-                                                position={_j}
-                                                mark={marks[mid]}
-                                            />
-                                            <button
-                                                onClick={() =>
-                                                    removeMarkFromCollection(
-                                                        mid,
-                                                        cid
-                                                    )
-                                                }
-                                            >
-                                                remove mark
-                                            </button>
+                                        <div class="bg-gray-100">
+                                            <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+                                                <div class="mx-auto max-w-none">
+                                                    <div class="overflow-hidden bg-white sm:rounded-lg sm:shadow">
+                                                        <MarkItem
+                                                            position={_j}
+                                                            mark={marks[mid]}
+                                                        />
+                                                        <button
+                                                            onClick={() =>
+                                                                removeMarkFromCollection(
+                                                                    mid,
+                                                                    cid
+                                                                )
+                                                            }
+                                                        >
+                                                            remove mark
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     )
                                 )}
