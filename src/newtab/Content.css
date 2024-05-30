@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 body {
     box-sizing: border-box;
     margin: 0 auto;
@@ -124,8 +123,9 @@ a.folder {
     border: 0 none #272f3b;
     border-image: none 100% 1 0 stretch;
     border-radius: 3px;
-    box-shadow: rgba(0, 0, 0, 0.03) 0 0 0 1px,
-    rgba(0, 0, 0, 0.07) 0 1px 1px 0;
+    box-shadow:
+        rgba(0, 0, 0, 0.03) 0 0 0 1px,
+        rgba(0, 0, 0, 0.07) 0 1px 1px 0;
     box-sizing: border-box;
     color: #272f3b;
     cursor: grab;
@@ -167,5 +167,4 @@ a.folder {
 .card > a:hover {
     text-decoration: none;
     color: #121222;
-
 }
