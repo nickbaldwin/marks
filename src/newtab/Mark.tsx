@@ -9,14 +9,15 @@ export const MarkItem = ({
 }) => {
     return (
         <div key={position} className="card">
-            {mark.id}
-            <br />
-            <p>{mark.title || mark.originalTitle}</p>
-            <br />
-            &nbsp;
-            <br />
-            <a href={mark.url}>{mark.url}</a>
-            <br />
+            <div className="card-icon"> ### &nbsp;</div>
+            <a href={mark.url}>
+                <div className="card-title">
+                    <p>{mark.title || mark.originalTitle}</p>
+                    <div className="hidden">{mark.id}</div>
+                    <div className="hidden">{mark.url}</div>
+                </div>
+            </a>
+            <div className="card-controls">...</div>
         </div>
     );
 };

@@ -55,31 +55,31 @@ export const FolderPage = () => {
                             >
                                 remove collection
                             </button>
+                            <br />
+                            <div className="container">
+                                {collections[cid].list.map(
+                                    (mid: string, _j: number) => (
+                                        <div>
+                                            <MarkItem
+                                                position={_j}
+                                                mark={marks[mid]}
+                                            />
+                                            <button
+                                                onClick={() =>
+                                                    removeMarkFromCollection(
+                                                        mid,
+                                                        cid
+                                                    )
+                                                }
+                                            >
+                                                remove mark
+                                            </button>
+                                        </div>
+                                    )
+                                )}
+                            </div>
+                            <br />
                         </div>
-                        <br />
-                        <div className="container">
-                            {collections[cid].list.map(
-                                (mid: string, _j: number) => (
-                                    <div>
-                                        <MarkItem
-                                            position={_j}
-                                            mark={marks[mid]}
-                                        />
-                                        <button
-                                            onClick={() =>
-                                                removeMarkFromCollection(
-                                                    mid,
-                                                    cid
-                                                )
-                                            }
-                                        >
-                                            remove mark
-                                        </button>
-                                    </div>
-                                )
-                            )}
-                        </div>
-                        <br />
                     </>
                 ))}
 
