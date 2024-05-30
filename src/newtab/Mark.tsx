@@ -12,7 +12,9 @@ export const MarkItem = ({
             <div className="card-icon"> ### &nbsp;</div>
             <a href={mark.url}>
                 <div className="card-title">
-                    <p>{mark.title || mark.originalTitle}</p>
+                    <p className="text-3xl font-bold underline">
+                        {mark.title || mark.originalTitle}
+                    </p>
                     <div className="hidden">{mark.id}</div>
                     <div className="hidden">{mark.url}</div>
                 </div>
