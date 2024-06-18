@@ -1,8 +1,10 @@
-import { CollectionsMap, FoldersMap, MarksMap } from '../store/schema';
+import { CollectionsMap, FoldersMap } from '../store/schema';
 import { State, useBoundStore } from '../store/store';
-import { MarkItem } from './Mark';
 import { AddCollectionToFolder } from '../elements/AddCollectionToFolder';
 import { useParams } from 'react-router-dom';
+import { DndContext } from '@dnd-kit/core';
+import { SortableContext } from '@dnd-kit/sortable';
+import { CollectionDisplay } from './CollectionDisplay';
 
 // export const FolderPage = ({ folderId }: { folderId: string }) => {
 export const FolderPage = () => {
@@ -18,82 +20,37 @@ export const FolderPage = () => {
         (state: State) => state.addCollectionToFolder
     );
 
-    const removeCollectionFromFolder = useBoundStore(
-        (state: State) => state.removeCollectionFromFolder
-    );
-
-    const marks: MarksMap = useBoundStore((state: State) => state.marksMap);
-
-    const removeMarkFromCollection = useBoundStore(
-        (state: State) => state.removeMarkFromCollection
-    );
-
     if (!folderId) {
         return <div> no folder</div>;
     }
 
     return (
-        <div className="container">
-            <div>
-                <h2>F: {folders[folderId].title}</h2>
-                <br />
+        <DndContext>
+            <div className="container">
+                <div>
+                    <h2>F: {folders[folderId].title}</h2>
+                    <br />
 
-                {folders[folderId].list.map((cid: string, _c: number) => (
-                    <>
-                        <div key={'-c-' + _c} className="collection">
-                            <h3> - C: {collections[cid].title}</h3>
-                            <br />
-                            &nbsp;
-                            <button
-                                onClick={() =>
-                                    removeCollectionFromFolder(
-                                        cid,
-                                        folderId,
-                                        true
-                                    )
-                                }
-                            >
-                                remove collection
-                            </button>
-                            <br />
-                            <div className="container">
-                                {collections[cid].list.map(
-                                    (mid: string, _j: number) => (
-                                        <div class="bg-gray-100">
-                                            <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-                                                <div class="mx-auto max-w-none">
-                                                    <div class="overflow-hidden bg-white sm:rounded-lg sm:shadow">
-                                                        <MarkItem
-                                                            position={_j}
-                                                            mark={marks[mid]}
-                                                        />
-                                                        <button
-                                                            onClick={() =>
-                                                                removeMarkFromCollection(
-                                                                    mid,
-                                                                    cid
-                                                                )
-                                                            }
-                                                        >
-                                                            remove mark
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                )}
-                            </div>
-                            <br />
-                        </div>
-                    </>
-                ))}
+                    {/* todo - sortable - pass 'column' ids ???? */}
+                    <SortableContext items={folders[folderId].list}>
+                        {folders[folderId].list.map(
+                            (cid: string, position: number) => (
+                                <CollectionDisplay
+                                    key={collections[cid].id}
+                                    collection={collections[cid]}
+                                    folderId={folderId}
+                                    position={position}
+                                />
+                            )
+                        )}
+                    </SortableContext>
 
-                <AddCollectionToFolder
-                    folderId={folderId}
-                    addCollectionToFolder={addCollectionToFolder}
-                />
+                    <AddCollectionToFolder
+                        folderId={folderId}
+                        addCollectionToFolder={addCollectionToFolder}
+                    />
+                </div>
             </div>
-        </div>
+        </DndContext>
     );
 };
