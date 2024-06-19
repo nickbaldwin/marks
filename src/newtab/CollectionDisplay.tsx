@@ -30,12 +30,13 @@ export const CollectionDisplay = ({
         listeners,
         transform,
         transition,
-        // isDragging,
+        isDragging,
     } = useSortable({
         id: collection.id,
         data: {
-            type: 'Column',
+            type: 'Collection',
             collection,
+            // position,
         },
     });
 
@@ -44,11 +45,13 @@ export const CollectionDisplay = ({
         transform: CSS.Transform.toString(transform),
     };
 
+    // 26:50 in https://www.youtube.com/watch?v=RG-3R6Pu_Ik&ab_channel=CodewithKliton
+
     return (
         <div
             {...attributes}
             {...listeners}
-            className="collection"
+            className={isDragging ? 'collection opacity-20' : 'collection'}
             ref={setNodeRef}
             style={style}
         >
