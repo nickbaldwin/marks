@@ -4,6 +4,8 @@ import { Collection, MarksMap } from '../store/schema';
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { TrashIcon } from '../icons/TrashIcon';
+import { useState } from 'react';
 
 export const CollectionContainer = ({
     collection,
@@ -14,6 +16,7 @@ export const CollectionContainer = ({
     folderId: string;
     position: number;
 }) => {
+    const [isMouseOver, setIsMouseOver] = useState<boolean>(false);
     const removeCollectionFromFolder = useBoundStore(
         (state: State) => state.removeCollectionFromFolder
     );
@@ -51,45 +54,57 @@ export const CollectionContainer = ({
         <div
             {...attributes}
             {...listeners}
-            className={isDragging ? 'collection opacity-20' : 'collection'}
+            className={
+                isDragging
+                    ? 'collection opacity-20 bg-gray-100'
+                    : 'collection bg-gray-100'
+            }
             ref={setNodeRef}
             style={style}
+            onMouseEnter={() => setIsMouseOver(true)}
+            onMouseLeave={() => setIsMouseOver(false)}
         >
-            <h3>C: {collection.title}</h3>
-            <br />
-            &nbsp;
-            <button
-                onClick={() =>
-                    removeCollectionFromFolder(collection.id, folderId, true)
-                }
-            >
-                remove collection
-            </button>
-            <br />
+            <h3 className="text-lg font-semibold leading-6 text-gray-900">
+                {collection.title}
+            </h3>
+
+            {isMouseOver && (
+                <button
+                    className="absolute top-0.5 right-0.5 stroke-black cursor-pointer  opacity-50 hover:opacity-100"
+                    onClick={() =>
+                        removeCollectionFromFolder(
+                            collection.id,
+                            folderId,
+                            true
+                        )
+                    }
+                >
+                    <TrashIcon />
+                </button>
+            )}
+
             <div className="container">
                 {collection.list.map((mid: string, _j: number) => (
                     <div className="bg-gray-100" key={mid}>
                         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
                             <div className="mx-auto max-w-none">
-                                <div className="overflow-hidden bg-white sm:rounded-lg sm:shadow">
-                                    <MarkItem position={_j} mark={marks[mid]} />
-                                    <button
-                                        onClick={() =>
+                                <div className="overflow-hidden bg-white sm:rounded-lg sm:shadow relative">
+                                    <MarkItem
+                                        position={_j}
+                                        mark={marks[mid]}
+                                        removeMark={() =>
                                             removeMarkFromCollection(
                                                 mid,
                                                 collection.id
                                             )
                                         }
-                                    >
-                                        remove mark
-                                    </button>
+                                    />
                                 </div>
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
-            <br />
         </div>
     );
 };

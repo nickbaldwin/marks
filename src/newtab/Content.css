@@ -119,23 +119,13 @@ a.folder {
 }
 
 .collection {
-    background-color: #ffffff;
-    border: 0 none #272f3b;
-    border-image: none 100% 1 0 stretch;
     border-radius: 3px;
     box-shadow:
         rgba(0, 0, 0, 0.03) 0 0 0 1px,
         rgba(0, 0, 0, 0.07) 0 1px 1px 0;
     box-sizing: border-box;
     color: #272f3b;
-    cursor: grab;
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 1.4444;
-    padding: 8px 0;
-    position: relative;
-
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .card {

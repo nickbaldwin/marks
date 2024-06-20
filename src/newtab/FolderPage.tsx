@@ -8,6 +8,9 @@ import {
     DragStartEvent,
     DragEndEvent,
     DragOverlay,
+    useSensors,
+    PointerSensor,
+    useSensor,
 } from '@dnd-kit/core';
 import {
     SortableContext,
@@ -23,6 +26,13 @@ export const FolderPage = () => {
     >();
 
     const { folderId } = useParams();
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 3,
+            },
+        })
+    );
     const collections: CollectionsMap = useBoundStore(
         (state: State) => state.collectionsMap
     );
@@ -91,6 +101,7 @@ export const FolderPage = () => {
 
     return (
         <DndContext
+            sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={onDragEnd}
             onDragStart={onDragStart}
