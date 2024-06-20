@@ -134,15 +134,59 @@ export const storeCreator = (set) => ({
             })
         );
     },
-    addCollectionToFolder: (
-        basicInfo: BasicInfo,
-        folderId: string
+    moveCollectionInFolder: (
+        folderId: string,
+        collectionId: string,
+        position: number,
+        newPosition: number
     ): void | string => {
-        const collection = new Collection(basicInfo);
+        if (!folderId || !position || !newPosition) {
+            return;
+        }
         set(
             produce((state: State) => {
-                if (state.foldersMap[folderId]) {
+                const folder = state.foldersMap[folderId];
+                const list = folder?.list;
+                const length = list.length;
+                if (
+                    !folder ||
+                    !list ||
+                    position > length ||
+                    newPosition > length ||
+                    list[position] !== collectionId
+                ) {
+                    return;
+                }
+                list.splice(position, 1);
+                list.splice(newPosition, 0, collectionId);
+            })
+        );
+    },
+
+    addCollectionToFolder: (
+        basicInfo: BasicInfo,
+        folderId: string,
+        position?: number
+    ): void | string => {
+        const collection = new Collection(basicInfo);
+        if (!collection || !folderId) {
+            return;
+        }
+        set(
+            produce((state: State) => {
+                if (!state.foldersMap[folderId]) {
+                    return;
+                }
+                if (!position) {
                     state.foldersMap[folderId].list.push(collection.id);
+                } else {
+                    state.foldersMap[folderId].list.splice(
+                        position,
+                        0,
+                        collection.id
+                    );
+                }
+                if (!state.collectionsMap[collection.id]) {
                     state.collectionsList.push(collection.id);
                     state.collectionsMap[collection.id] = collection;
                 }

@@ -1,7 +1,7 @@
 // todo needed here?
 import '@testing-library/jest-dom';
 
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 import { create as actualCreate, StateCreator } from 'zustand';
 // import { produce } from 'immer';
 import { Collection, Folder } from '../store/schema';
