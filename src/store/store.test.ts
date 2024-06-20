@@ -281,6 +281,136 @@ describe('collections', async () => {
         act(() => result.current.addFolder({ title: '', description: '' }));
     });
 
+    it('adds then moves a collection in a folder', async () => {
+        const useStore = createStoreForTest()(storeCreator);
+        const { result } = renderHook(() => useStore());
+        expect(result.current.foldersList).toEqual(['default']);
+        const folder = new Folder({
+            title: 'folder one',
+            description: 'description folder one',
+        });
+        act(() => result.current.addFolder(folder));
+        expect(result.current.foldersList.length).toEqual(2);
+        const folderId = result.current.foldersList[1];
+
+        const collectionOne = new Collection({
+            title: 'collection one',
+            description: 'description collection one',
+        });
+        act(() =>
+            result.current.addCollectionToFolder(collectionOne, folderId)
+        );
+
+        const collectionTwo = new Collection({
+            title: 'collection two',
+            description: 'description collection two',
+        });
+        act(() =>
+            result.current.addCollectionToFolder(collectionTwo, folderId)
+        );
+
+        const collectionThree = new Collection({
+            title: 'collection three',
+            description: 'description collection three',
+        });
+        act(() =>
+            result.current.addCollectionToFolder(collectionThree, folderId)
+        );
+
+        expect(result.current.foldersMap[folderId].list.length).toEqual(3);
+
+        const cidOne = result.current.foldersMap[folderId].list[0];
+        const cidTwo = result.current.foldersMap[folderId].list[1];
+        const cidThree = result.current.foldersMap[folderId].list[2];
+        expect(result.current.collectionsMap).toEqual({
+            inbox: expect.objectContaining({
+                id: 'inbox',
+                title: 'inbox',
+                description: 'inbox',
+                list: [],
+                version: 1,
+                createdAt: expect.anything(),
+                updatedAt: expect.anything(),
+            }),
+            [cidOne]: expect.objectContaining({
+                id: cidOne,
+                title: 'collection one',
+                description: 'description collection one',
+                list: [],
+                version: 1,
+                createdAt: expect.anything(),
+                updatedAt: expect.anything(),
+            }),
+            [cidTwo]: expect.objectContaining({
+                id: cidTwo,
+                title: 'collection two',
+                description: 'description collection two',
+                list: [],
+                version: 1,
+                createdAt: expect.anything(),
+                updatedAt: expect.anything(),
+            }),
+            [cidThree]: expect.objectContaining({
+                id: cidThree,
+                title: 'collection three',
+                description: 'description collection three',
+                list: [],
+                version: 1,
+                createdAt: expect.anything(),
+                updatedAt: expect.anything(),
+            }),
+        });
+        expect(result.current.foldersMap[folderId].list).toEqual([
+            cidOne,
+            cidTwo,
+            cidThree,
+        ]);
+        act(() =>
+            result.current.moveCollectionInFolder(folderId, cidThree, 2, 0)
+        );
+        expect(result.current.foldersMap[folderId].list).toEqual([
+            cidThree,
+            cidOne,
+            cidTwo,
+        ]);
+
+        act(() =>
+            result.current.moveCollectionInFolder(folderId, cidThree, 0, 1)
+        );
+        expect(result.current.foldersMap[folderId].list).toEqual([
+            cidOne,
+            cidThree,
+            cidTwo,
+        ]);
+
+        act(() =>
+            result.current.moveCollectionInFolder(folderId, cidOne, 0, 2)
+        );
+        expect(result.current.foldersMap[folderId].list).toEqual([
+            cidThree,
+            cidTwo,
+            cidOne,
+        ]);
+
+        act(() =>
+            result.current.moveCollectionInFolder(folderId, cidTwo, 1, 0)
+        );
+        expect(result.current.foldersMap[folderId].list).toEqual([
+            cidTwo,
+            cidThree,
+            cidOne,
+        ]);
+
+        act(() =>
+            result.current.moveCollectionInFolder(folderId, cidThree, 1, 2)
+        );
+        expect(result.current.foldersMap[folderId].list).toEqual([
+            cidTwo,
+            cidOne,
+            cidThree,
+        ]);
+    });
+
     describe('marks', async () => {
         it('adds a mark to collection', async () => {
             const useStore = createStoreForTest()(storeCreator);

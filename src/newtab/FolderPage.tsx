@@ -29,14 +29,13 @@ export const FolderPage = () => {
     const folders: FoldersMap = useBoundStore(
         (state: State) => state.foldersMap
     );
-
     const addCollectionToFolder = useBoundStore(
         (state: State) => state.addCollectionToFolder
     );
 
-    if (!folderId) {
-        return <div> no folder</div>;
-    }
+    const moveCollection = useBoundStore(
+        (state: State) => state.moveCollectionInFolder
+    );
 
     function onDragStart(event: DragStartEvent) {
         console.log('drag start', event);
@@ -47,11 +46,48 @@ export const FolderPage = () => {
     }
 
     function onDragEnd(event: DragEndEvent) {
+        if (!folderId) {
+            return;
+        }
+        const list = [...folders[folderId].list];
+
         console.log('drag end', event);
+        const { active, over } = event;
+        if (!over) {
+            // not over another collection
+            console.log('not over another collection');
+            return;
+        }
+        if (active.id === over.id) {
+            // item dropped in original position
+            console.log('item dropped in original position');
+            return;
+        }
+
+        if (draggingCollection && draggingCollection === active.id) {
+            // addCollectionToFolder(draggingCollection, over.id);
+            console.log('dropped item', active.id, 'over', over.id);
+            console.log('list', list);
+            const posActive = list.indexOf(active.id);
+            const posOver = list.indexOf(over.id as string);
+
+            // if (posActive !== )
+
+            moveCollection(folderId, active.id, posActive, posOver);
+
+            setDraggingCollection(null);
+        } else {
+            console.log('else');
+            console.log('draggingCollection', draggingCollection);
+        }
     }
 
     // 26:50 in https://www.youtube.com/watch?v=RG-3R6Pu_Ik&ab_channel=CodewithKliton
     // todo ?- create a portal for the drag overlay
+
+    if (!folderId || !folders[folderId]) {
+        return <div> no folder</div>;
+    }
 
     return (
         <DndContext

@@ -42,6 +42,12 @@ export interface StateActions {
         folderId: string,
         isRemoveMarks: boolean
     ) => void;
+    moveCollectionInFolder: (
+        folderId: string,
+        collectionId: string,
+        position: number,
+        newPosition: number
+    ) => void;
     addFolder: (basicInfo: BasicInfo) => void;
     removeFolder: (folderId: string) => void;
     reset: () => void;
@@ -109,7 +115,6 @@ export const storeCreator = (set) => ({
 
     addMarkToCollection: (urlInfo: UrlInfo, collectionId: string) => {
         const mark = new Mark(urlInfo);
-        console.log(mark);
         const mid = mark.id;
         set(
             produce((state: State) => {
@@ -140,9 +145,6 @@ export const storeCreator = (set) => ({
         position: number,
         newPosition: number
     ): void | string => {
-        if (!folderId || !position || !newPosition) {
-            return;
-        }
         set(
             produce((state: State) => {
                 const folder = state.foldersMap[folderId];
@@ -155,10 +157,21 @@ export const storeCreator = (set) => ({
                     newPosition > length ||
                     list[position] !== collectionId
                 ) {
+                    console.log('error');
                     return;
                 }
                 list.splice(position, 1);
+                console.log(list);
                 list.splice(newPosition, 0, collectionId);
+
+                console.log(
+                    'updated',
+                    list,
+                    position,
+                    newPosition,
+                    list[position],
+                    collectionId
+                );
             })
         );
     },
