@@ -147,8 +147,9 @@ describe('collections', async () => {
             description: 'description collection one',
         });
 
-        // @ts-expect-error todo return
-        act(() => result.current.addCollectionToFolder(collection, folderId));
+        await act(() =>
+            result.current.addCollectionToFolder(collection, folderId)
+        );
         expect(result.current.foldersMap[folderId].list.length).toEqual(1);
         const cid = result.current.foldersMap[folderId].list[0];
         expect(result.current.collectionsMap).toEqual({
@@ -194,8 +195,8 @@ describe('collections', async () => {
             title: 'collection one',
             description: 'description collection one',
         });
-        // @ts-expect-error todo return
-        act(() => result.current.addCollectionToFolder(collection, fid));
+
+        await act(() => result.current.addCollectionToFolder(collection, fid));
         const cid = result.current.foldersMap[fid].list[0];
 
         act(() => result.current.removeCollectionFromFolder(cid, fid, true));
@@ -231,8 +232,8 @@ describe('collections', async () => {
             title: 'collection one',
             description: 'description collection one',
         });
-        // @ts-expect-error todo return
-        act(() => result.current.addCollectionToFolder(collection, fid));
+
+        await act(() => result.current.addCollectionToFolder(collection, fid));
         const cid = result.current.foldersMap[fid].list[0];
 
         act(() => result.current.removeCollectionFromFolder(cid, '123', true));
@@ -262,8 +263,8 @@ describe('collections', async () => {
             title: 'collection one',
             description: 'description collection one',
         });
-        // @ts-expect-error todo return
-        act(() => result.current.addCollectionToFolder(collection, fid));
+
+        await act(() => result.current.addCollectionToFolder(collection, fid));
         const cid = result.current.foldersMap[fid].list[0];
 
         act(() => result.current.removeCollectionFromFolder('123', fid, true));
@@ -297,7 +298,7 @@ describe('collections', async () => {
             title: 'collection one',
             description: 'description collection one',
         });
-        act(() =>
+        await act(() =>
             result.current.addCollectionToFolder(collectionOne, folderId)
         );
 
@@ -305,7 +306,7 @@ describe('collections', async () => {
             title: 'collection two',
             description: 'description collection two',
         });
-        act(() =>
+        await act(() =>
             result.current.addCollectionToFolder(collectionTwo, folderId)
         );
 
@@ -313,7 +314,7 @@ describe('collections', async () => {
             title: 'collection three',
             description: 'description collection three',
         });
-        act(() =>
+        await act(() =>
             result.current.addCollectionToFolder(collectionThree, folderId)
         );
 
@@ -365,7 +366,7 @@ describe('collections', async () => {
             cidTwo,
             cidThree,
         ]);
-        act(() =>
+        await act(() =>
             result.current.moveCollectionInFolder(folderId, cidThree, 2, 0)
         );
         expect(result.current.foldersMap[folderId].list).toEqual([
@@ -374,7 +375,7 @@ describe('collections', async () => {
             cidTwo,
         ]);
 
-        act(() =>
+        await act(() =>
             result.current.moveCollectionInFolder(folderId, cidThree, 0, 1)
         );
         expect(result.current.foldersMap[folderId].list).toEqual([
@@ -383,7 +384,7 @@ describe('collections', async () => {
             cidTwo,
         ]);
 
-        act(() =>
+        await act(() =>
             result.current.moveCollectionInFolder(folderId, cidOne, 0, 2)
         );
         expect(result.current.foldersMap[folderId].list).toEqual([
@@ -392,7 +393,7 @@ describe('collections', async () => {
             cidOne,
         ]);
 
-        act(() =>
+        await act(() =>
             result.current.moveCollectionInFolder(folderId, cidTwo, 1, 0)
         );
         expect(result.current.foldersMap[folderId].list).toEqual([
@@ -401,7 +402,7 @@ describe('collections', async () => {
             cidOne,
         ]);
 
-        act(() =>
+        await act(() =>
             result.current.moveCollectionInFolder(folderId, cidThree, 1, 2)
         );
         expect(result.current.foldersMap[folderId].list).toEqual([
