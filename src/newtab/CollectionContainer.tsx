@@ -5,7 +5,7 @@ import { Collection, MarksMap } from '../store/schema';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-export const CollectionDisplay = ({
+export const CollectionContainer = ({
     collection,
     folderId,
     // position,

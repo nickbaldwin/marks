@@ -13,7 +13,7 @@ import {
     SortableContext,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { CollectionDisplay } from './CollectionDisplay';
+import { CollectionContainer } from './CollectionContainer';
 import { useState } from 'react';
 
 // export const FolderPage = ({ folderId }: { folderId: string }) => {
@@ -107,7 +107,7 @@ export const FolderPage = () => {
                     >
                         {folders[folderId].list.map(
                             (cid: string, position: number) => (
-                                <CollectionDisplay
+                                <CollectionContainer
                                     key={collections[cid].id}
                                     collection={collections[cid]}
                                     folderId={folderId}
@@ -117,7 +117,7 @@ export const FolderPage = () => {
                         )}
                         <DragOverlay>
                             {draggingCollection && (
-                                <CollectionDisplay
+                                <CollectionContainer
                                     key={'active'}
                                     collection={collections[draggingCollection]}
                                     folderId={folderId}
