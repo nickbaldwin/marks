@@ -44,9 +44,9 @@ export interface StateActions {
         markId: string,
         oldCollectionId: string,
         newCollectionId: string,
-        overId?: string,
-        oldPosition?: number,
-        newPosition?: number
+        overId: string,
+        insert: string,
+        position?: number
     ) => void;
 
     moveMark: (markId: string, collectionId: string, overId: string) => void;
@@ -195,9 +195,9 @@ export const storeCreator = (set) => ({
         markId: string,
         oldCollectionId: string,
         newCollectionId: string,
-        overId?: string,
-        oldPosition?: number,
-        newPosition?: number
+        overId: string,
+        insert: string,
+        position?: number
     ) => {
         console.log('moving it');
         set(
@@ -206,7 +206,7 @@ export const storeCreator = (set) => ({
                     !state.collectionsMap[oldCollectionId] ||
                     !state.collectionsMap[newCollectionId] ||
                     !state.marksMap[markId] ||
-                    (!overId && !newPosition)
+                    (!overId && !insert)
                 ) {
                     console.log('noop');
                     return;
@@ -228,6 +228,28 @@ export const storeCreator = (set) => ({
                         .slice(0, pos)
                         .concat(markId)
                         .concat(newList.slice(pos, length));
+                } else if (insert) {
+                    state.collectionsMap[oldCollectionId].list =
+                        state.collectionsMap[oldCollectionId].list.filter(
+                            (id) => id !== markId
+                        );
+                    if (insert === 'start') {
+                        state.collectionsMap[newCollectionId].list = [
+                            markId,
+                        ].concat(newList);
+                    } else if (insert === 'end') {
+                        state.collectionsMap[newCollectionId].list =
+                            newList.concat(markId);
+                    }
+                } else if (position !== undefined) {
+                    state.collectionsMap[oldCollectionId].list =
+                        state.collectionsMap[oldCollectionId].list.filter(
+                            (id) => id !== markId
+                        );
+                    state.collectionsMap[newCollectionId].list = newList
+                        .slice(0, position)
+                        .concat(markId)
+                        .concat(newList.slice(position, length));
                 }
             })
         );

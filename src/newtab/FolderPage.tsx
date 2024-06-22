@@ -73,9 +73,7 @@ export const FolderPage = () => {
 
     function onDragOver(event: DragOverEvent) {
         console.log('drag over', event);
-        if (!folderId) {
-            return;
-        }
+
         const { active, over } = event;
         if (active.id === over?.id) {
             // item over original position
@@ -87,7 +85,8 @@ export const FolderPage = () => {
         const isOverTypeMark = event.over?.data?.current?.type === 'Mark';
         const isActiveTypeCollection =
             event.active?.data?.current?.type === 'Collection';
-        // const isOverTypeCollection = event.over?.data?.current?.type === 'Collection';
+        const isOverTypeCollection =
+            event.over?.data?.current?.type === 'Collection';
 
         if (isActiveTypeCollection) {
             console.log('dragged collection over something - ignoring');
@@ -116,8 +115,54 @@ export const FolderPage = () => {
                     active.id as string,
                     oldCollectionId,
                     newCollectionId,
-                    over?.id as string
+                    over?.id as string,
+                    ''
                 );
+            }
+            return;
+        }
+        if (isActiveTypeMark && isOverTypeCollection && over?.id) {
+            console.log('dragged mark over collection');
+
+            const oldCollectionId =
+                event.active?.data?.current?.sortable?.containerId;
+            const newCollectionId = event.over?.data?.current?.collection.id;
+
+            console.log(event.over);
+            console.log(oldCollectionId);
+            console.log(newCollectionId);
+
+            if (
+                collections[over.id] &&
+                collections[over.id].list.includes(active.id as string)
+            ) {
+                console.log('mark already in collection');
+                return;
+            } else {
+                console.log('not in this collection');
+                console.log(event);
+                if (event.delta?.y < 0) {
+                    console.log('move to bottom of prev collection');
+
+                    moveMarkBC(
+                        active.id as string,
+                        oldCollectionId,
+                        newCollectionId,
+                        '',
+                        'end'
+                    );
+                } else {
+                    console.log('move to top of next collection');
+
+                    moveMarkBC(
+                        active.id as string,
+                        oldCollectionId,
+                        newCollectionId,
+                        '',
+                        'start'
+                    );
+                }
+                // todo - from top vs bottom
             }
         }
     }
