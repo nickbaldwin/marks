@@ -2,7 +2,11 @@ import { State, useBoundStore } from '../store/store';
 import { MarkItem } from './Mark';
 import { Collection, MarksMap } from '../store/schema';
 
-import { useSortable } from '@dnd-kit/sortable';
+import {
+    SortableContext,
+    useSortable,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { TrashIcon } from '../icons/TrashIcon';
 import { useState } from 'react';
@@ -45,7 +49,7 @@ export const CollectionContainer = ({
 
     const style = {
         transition,
-        transform: CSS.Transform.toString(transform),
+        transform: CSS.Translate.toString(transform),
     };
 
     // 26:50 in https://www.youtube.com/watch?v=RG-3R6Pu_Ik&ab_channel=CodewithKliton
@@ -84,26 +88,32 @@ export const CollectionContainer = ({
             )}
 
             <div className="container">
-                {collection.list.map((mid: string, _j: number) => (
-                    <div className="bg-gray-100" key={mid}>
-                        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-                            <div className="mx-auto max-w-none">
-                                <div className="overflow-hidden bg-white sm:rounded-lg sm:shadow relative">
-                                    <MarkItem
-                                        position={_j}
-                                        mark={marks[mid]}
-                                        removeMark={() =>
-                                            removeMarkFromCollection(
-                                                mid,
-                                                collection.id
-                                            )
-                                        }
-                                    />
+                <SortableContext
+                    id={collection.id}
+                    strategy={verticalListSortingStrategy}
+                    items={collection.list}
+                >
+                    {collection.list.map((mid: string, _j: number) => (
+                        <div className="bg-gray-100" key={mid}>
+                            <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+                                <div className="mx-auto max-w-none">
+                                    <div className="overflow-hidden bg-white sm:rounded-lg sm:shadow relative">
+                                        <MarkItem
+                                            position={_j}
+                                            mark={marks[mid]}
+                                            removeMark={() =>
+                                                removeMarkFromCollection(
+                                                    mid,
+                                                    collection.id
+                                                )
+                                            }
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </SortableContext>
             </div>
         </div>
     );

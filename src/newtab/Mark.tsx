@@ -1,6 +1,8 @@
 import { Mark } from '../store/schema';
 import { TrashIcon } from '../icons/TrashIcon';
 import { useState } from 'react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 export const MarkItem = ({
     mark,
@@ -12,10 +14,40 @@ export const MarkItem = ({
     removeMark: () => void;
 }) => {
     const [isMouseOver, setIsMouseOver] = useState<boolean>(false);
+
+    const {
+        setNodeRef,
+        attributes,
+        listeners,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({
+        id: mark.id,
+        data: {
+            type: 'Mark',
+            mark,
+            // position,
+        },
+    });
+
+    const style = {
+        transition,
+        transform: CSS.Translate.toString(transform),
+    };
+
     return (
         <div
+            {...attributes}
+            {...listeners}
+            className={
+                isDragging
+                    ? 'border-b border-gray-200 bg-white px-4 py-5 sm:px-6 opacity-20'
+                    : 'border-b border-gray-200 bg-white px-4 py-5 sm:px-6'
+            }
+            ref={setNodeRef}
+            style={style}
             key={mark.id}
-            className="border-b border-gray-200 bg-white px-4 py-5 sm:px-6"
             onMouseLeave={() => setIsMouseOver(false)}
             onMouseEnter={() => setIsMouseOver(true)}
         >

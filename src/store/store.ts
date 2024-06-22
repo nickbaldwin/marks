@@ -34,7 +34,23 @@ export interface StateValues {
 
 export interface StateActions {
     increase: (by: number) => void;
-    addMarkToCollection: (urlInfo: UrlInfo, collectionId: string) => void;
+    addMarkToCollection: (
+        urlInfo: UrlInfo,
+        collectionId: string,
+        position?: number
+    ) => void;
+
+    moveMarkBetweenCollection: (
+        markId: string,
+        oldCollectionId: string,
+        newCollectionId: string,
+        overId?: string,
+        oldPosition?: number,
+        newPosition?: number
+    ) => void;
+
+    moveMark: (markId: string, collectionId: string, overId: string) => void;
+
     removeMarkFromCollection: (markId: string, collectionId: string) => void;
     addCollectionToFolder: (basicInfo: BasicInfo, folderId: string) => string;
     removeCollectionFromFolder: (
@@ -113,14 +129,105 @@ export const storeCreator = (set) => ({
         }));
     },
 
-    addMarkToCollection: (urlInfo: UrlInfo, collectionId: string) => {
+    addMarkToCollection: (
+        urlInfo: UrlInfo,
+        collectionId: string,
+        position?: number
+    ) => {
         const mark = new Mark(urlInfo);
         const mid = mark.id;
         set(
             produce((state: State) => {
                 if (state.collectionsMap[collectionId]) {
-                    state.collectionsMap[collectionId].list.push(mid);
+                    const list = state.collectionsMap[collectionId].list;
                     state.marksMap[mid] = mark;
+                    if (!position) {
+                        list.push(mid);
+                    }
+                    const length = list.length;
+                    if (position && position < length) {
+                        state.collectionsMap[collectionId].list = list
+                            .slice(0, position)
+                            .concat(mid)
+                            .concat(list.slice(position + 1, length));
+                    }
+                }
+            })
+        );
+    },
+
+    moveMark: (markId: string, collectionId: string, oldId: string) => {
+        console.log('moving it');
+        set(
+            produce((state: State) => {
+                if (
+                    !state.collectionsMap[collectionId] ||
+                    !state.collectionsMap[collectionId].list.includes(markId) ||
+                    !state.collectionsMap[collectionId].list.includes(oldId) ||
+                    !state.marksMap[markId] ||
+                    !state.marksMap[oldId]
+                ) {
+                    console.log('noop');
+                    return;
+                }
+
+                const oldPosition =
+                    state.collectionsMap[collectionId].list.indexOf(markId);
+                const newPosition =
+                    state.collectionsMap[collectionId].list.indexOf(oldId);
+
+                if (oldPosition === -1 || oldPosition === -1) {
+                    console.log('one of the elements not found');
+                    return;
+                }
+
+                console.log('swapping');
+                const temp =
+                    state.collectionsMap[collectionId].list[newPosition];
+                state.collectionsMap[collectionId].list[newPosition] =
+                    state.collectionsMap[collectionId].list[oldPosition];
+                state.collectionsMap[collectionId].list[oldPosition] = temp;
+            })
+        );
+    },
+
+    moveMarkBetweenCollection: (
+        markId: string,
+        oldCollectionId: string,
+        newCollectionId: string,
+        overId?: string,
+        oldPosition?: number,
+        newPosition?: number
+    ) => {
+        console.log('moving it');
+        set(
+            produce((state: State) => {
+                if (
+                    !state.collectionsMap[oldCollectionId] ||
+                    !state.collectionsMap[newCollectionId] ||
+                    !state.marksMap[markId] ||
+                    (!overId && !newPosition)
+                ) {
+                    console.log('noop');
+                    return;
+                }
+                const newList = state.collectionsMap[newCollectionId].list;
+
+                if (overId) {
+                    const pos = newList.indexOf(overId);
+                    const length = newList.length;
+                    if (pos === -1) {
+                        return;
+                    }
+
+                    state.collectionsMap[oldCollectionId].list =
+                        state.collectionsMap[oldCollectionId].list.filter(
+                            (id) => id !== markId
+                        );
+                    state.collectionsMap[newCollectionId].list = newList
+                        .slice(0, pos)
+                        .concat(markId)
+                        .concat(newList.slice(pos, length));
                 }
             })
         );
